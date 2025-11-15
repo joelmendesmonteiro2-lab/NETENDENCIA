@@ -3,97 +3,1754 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NETENDENCIA - Controle da Sua Vida Digital</title>
-    <link rel="stylesheet" href="style.css">
+    <title>NETeNDENCIA - Controle de Dependência de Internet</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #4a6baf;
+            --secondary-color: #f0f4f8;
+            --accent-color: #4a6baf;
+            --text-color: #333;
+            --light-text: #666;
+            --border-color: #ddd;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+            --dependente-color: #ff6b6b;
+            --moderado-color: #ffa726;
+            --nao-dependente-color: #4caf50;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-color), #6a8bcf);
+            border-radius: 12px;
+            color: white;
+            box-shadow: var(--card-shadow);
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        h2 i {
+            margin-right: 10px;
+        }
+        
+        .welcome {
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 25px;
+            text-align: center;
+            border-left: 5px solid var(--primary-color);
+        }
+        
+        .welcome h2 {
+            margin-bottom: 10px;
+            justify-content: center;
+        }
+        
+        .divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--border-color), transparent);
+            margin: 25px 0;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 15px;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:hover {
+            background-color: #3a5a9f;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-accent {
+            background-color: var(--accent-color);
+        }
+        
+        .btn-accent:hover {
+            background-color: #4a6baf;
+        }
+        
+        .btn-exit {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-exit:hover {
+            background-color: #3a5a9f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.25);
+        }
+        
+        .tips-container {
+            margin-bottom: 30px;
+        }
+        
+        .carousel-container {
+            position: relative;
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            border-top: 5px solid var(--accent-color);
+            overflow: hidden;
+        }
+        
+        .chart-container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 25px;
+            border-top: 5px solid #4a6baf;
+        }
+        
+        .chart {
+            height: 300px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border: 2px dashed #ddd;
+        }
+        
+        .chart-placeholder {
+            color: #999;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        
+        .tips-blank {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-style: italic;
+            background: #f9f9f9;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px dashed #ddd;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: var(--light-text);
+            font-size: 0.9rem;
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            vertical-align: middle;
+        }
+        
+        .icon-progress { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%234a6baf"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>'); }
+        .icon-question { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%234a6baf"><path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/></svg>'); }
+        .icon-tips { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ff6b6b"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>'); }
+        .icon-chart { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%234CAF50"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>'); }
+        .icon-exit { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>'); }
+        .icon-family { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%234a6baf"><path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A2.01 2.01 0 0018.06 7h-2.12c-.93 0-1.76.53-2.18 1.37L12.5 13.6 11.22 10c-.48-1.06-1.54-1.8-2.72-1.8H4c-1.1 0-2 .9-2 2v6h2v6h4v-6h2v6h4v-6h2v6h4v-6h2v6h4v-6zm-7-7.5V9c0-1.1.9-2 2-2h2c1.1 0 2 .9 2 2v5.5c0 .83-.67 1.5-1.5 1.5h-3c-.83 0-1.5-.67-1.5-1.5z"/></svg>'); }
+        
+        /* Novos estilos */
+        .user-profile {
+            margin-bottom: 25px;
+        }
+        
+        .profile-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .profile-item {
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .profile-item strong {
+            display: block;
+            color: var(--light-text);
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .nivel {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .nivel.dependente {
+            background-color: var(--dependente-color);
+            color: white;
+        }
+        
+        .nivel.moderado {
+            background-color: var(--moderado-color);
+            color: white;
+        }
+        
+        .nivel.nao-dependente {
+            background-color: var(--nao-dependente-color);
+            color: white;
+        }
+        
+        .family-container {
+            margin-bottom: 25px;
+        }
+        
+        .family-members {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .family-member {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-color);
+            position: relative;
+        }
+        
+        .family-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+        
+        .reavaliacao-alerta {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Modal do questionário */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--light-text);
+        }
+        
+        .pergunta {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .pergunta-texto {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+        
+        .opcoes-resposta {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .opcao {
+            padding: 12px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .opcao:hover {
+            border-color: var(--primary-color);
+            background: #f0f4f8;
+        }
+        
+        .opcao.selecionada {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .solucoes-list {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .solucao-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .solucao-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* Centro de Recursos */
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .resource-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .resource-card h4 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .resource-card p {
+            color: var(--light-text);
+            font-size: 0.9rem;
+        }
+        
+        .action-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .action-item input {
+            margin-right: 10px;
+        }
+        
+        .action-item.completed {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+        
+        .reflection-question {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .reflection-question label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .reflection-question textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        /* Botão de excluir membro */
+        .btn-excluir {
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: var(--transition);
+        }
+        
+        .btn-excluir:hover {
+            background-color: #ff5252;
+            transform: translateY(-1px);
+        }
+
+        /* Botão de questionário para membros */
+        .btn-questionario {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            margin-top: 8px;
+            margin-right: 5px;
+            transition: var(--transition);
+        }
+        
+        .btn-questionario:hover {
+            background-color: #3a5a9f;
+            transform: translateY(-1px);
+        }
+        
+        .sem-diagnostico {
+            color: #999;
+            font-style: italic;
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+
+        .botoes-membro {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-exit {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 10px auto;
+                display: flex;
+                justify-content: center;
+            }
+            
+            .modal-content {
+                margin: 20px;
+                padding: 20px;
+            }
+            
+            .family-stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .resources-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .botoes-membro {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Cabeçalho -->
-    <header class="header">
-        <nav class="nav-fixed">
-            <div class="container">
-                <img src="imagens/image-removebg-preview.png" alt="" height="100px">
-                <p class="tagline">Recupere o Controle da Sua Vida Digital</p>
-            </div>
-            <div>
-                <a href="#" class="button-entrada">Entrar</a>
-            </div>
-        </nav>
+    <header>
+        <h1>NETENDENCIA</h1>
+        <p>Controle sua dependência de internet, recupere sua vida</p>
+        <button class="btn-exit" id="exitBtn">
+            <span class="icon icon-exit"></span>
+            Sair
+        </button>
     </header>
-
-    <!-- Seção Hero -->
-     <main> 
-    <section class="hero">
-        <div class="container">
-            <h2>Supere a dependência da internet com ferramentas baseadas em ciência, questionários personalizados e apoio contínuo.</h2>
-            <button class="cta-button">Comece Sua Jornada</button>
-        </div>
+    
+    <section class="welcome">
+        <h2><span class="icon icon-progress"></span>Olá, <span id="userName">Usuário</span>!</h2>
+        <p>Bem-vindo de volta à sua jornada rumo ao equilíbrio digital</p>
     </section>
-
-    <!-- Recursos -->
-    <section class="features">
-        <div class="container">
-            <div class="feature-grid">
-                <!-- Análise do Perfil -->
-                <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3>Análise do Perfil</h3>
-                    <p>Questionários confidenciais para identificar níveis de uso problemático</p>
-                </div>
-
-                <!-- Metas Personalizadas -->
-                <div class="feature-card">
-                    <div class="feature-icon">🎯</div>
-                    <h3>Metas Personalizadas</h3>
-                    <p>Objetivos adaptados ao seu perfil e nível de dependência</p>
-                </div>
-
-                <!-- Progresso Visual -->
-                <div class="feature-card">
-                    <div class="feature-icon">📈</div>
-                    <h3>Progresso Visual</h3>
-                    <p>Acompanhe sua evolução com gráficos e métricas motivacionais</p>
-                </div>
-
-                <!-- Apoio Contínuo -->
-                <div class="feature-card">
-                    <div class="feature-icon">🤝</div>
-                    <h3>Apoio Contínuo</h3>
-                    <p>Recursos e feedback para manter você motivado na jornada</p>
-                </div>
+    
+    <!-- Perfil do Usuário -->
+    <section class="user-profile">
+        <div class="card">
+            <h2><span class="icon icon-progress"></span>Seu Perfil</h2>
+            <div class="profile-info" id="profileInfo">
+                <!-- Preenchido via JavaScript -->
             </div>
         </div>
     </section>
-
-    <!-- Estatísticas -->
-      <section class="stats">
-  <div class="container">
-    <h2>Por que escolher a NETENDENCIA?</h2>
-    <div class="stats-grid">
-      <div class="stat-item">
-        <div class="stat-number azul">95%</div>
-        <div class="stat-label">Dos usuários relatam melhora significativa</div>
-      </div>
-
-      <div class="stat-item">
-        <div class="stat-number verde">30 dias</div>
-        <div class="stat-label">Tempo médio para ver resultados</div>
-      </div>
-
-      <div class="stat-item">
-        <div class="stat-number amarelo">24/7</div>
-        <div class="stat-label">Suporte e recursos disponíveis</div>
-      </div>
+    
+    <div class="divider"></div>
+    
+    <div class="dashboard">
+        <section class="card">
+            <h2><span class="icon icon-question"></span>Avaliação Diária</h2>
+            <p>Responda ao questionário diário para acompanhar seu progresso e receber feedback personalizado.</p>
+            <button class="btn" id="startQuiz">Iniciar Questionário</button>
+        </section>
+        
+        <!-- Resumo Familiar -->
+        <section class="card">
+            <h2><span class="icon icon-family"></span>Resumo Familiar</h2>
+            <div id="familySummary">
+                <!-- Preenchido via JavaScript -->
+            </div>
+            <button class="btn" id="addFamilyMember" style="margin-top: 15px;">+ Adicionar Membro</button>
+        </section>
     </div>
-  </div>
-</section>
-
-</main>
-
-    <!-- Rodapé -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 NETENDENCIA. Todos os direitos reservados.</p>
+    
+    <!-- Centro de Recursos -->
+    <section class="card">
+        <h2><span class="icon icon-tips"></span>Centro de Recursos</h2>
+        <div class="resources-grid">
+            <div class="resource-card" onclick="abrirDicasPersonalizadas()">
+                <h4>💡 Dicas Personalizadas</h4>
+                <p>Sugestões para melhorar seu bem-estar digital baseadas no seu último diagnóstico</p>
+            </div>
+            
+            <div class="resource-card" onclick="abrirPanoramaFamilia()">
+                <h4>👨‍👩‍👧‍👦 Panorama da Família</h4>
+                <p>Veja a média das pontuações e distribuição dos níveis na sua família</p>
+            </div>
+            
+            <div class="resource-card" onclick="abrirAutoavaliacao()">
+                <h4>📝 Autoavaliação e Reflexão</h4>
+                <p>Reflita sobre seu uso digital e como você se sente em relação a ele</p>
+            </div>
+            
+            <div class="resource-card" onclick="abrirPlanoAcao()">
+                <h4>✅ Plano de Ação Pessoal</h4>
+                <p>Crie e acompanhe seu plano personalizado para melhorar seu bem-estar digital</p>
+            </div>
         </div>
+    </section>
+    
+    <section class="chart-container">
+        <h2><span class="icon icon-chart"></span>Seu Progresso</h2>
+        <p>Evolução do seu controle do tempo de tela</p>
+        <div class="chart" id="progressChart">
+            <canvas id="chartCanvas"></canvas>
+        </div>
+    </section>
+    
+    <footer>
+        <p>NETNDENCIA - Sua jornada para uma vida digital equilibrada</p>
+        <p>© 2025 - Todos os direitos reservados</p>
     </footer>
+
+    <!-- Modal do Questionário -->
+    <div id="quizModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h2>Questionário de Dependência Digital</h2>
+            <p>Responda com sinceridade para obter um diagnóstico preciso.</p>
+            
+            <div id="quizQuestions">
+                <!-- Perguntas serão inseridas aqui via JavaScript -->
+            </div>
+            
+            <button class="btn" id="submitQuiz" style="display: none;">Enviar Respostas</button>
+            <div id="quizResult" style="display: none;">
+                <!-- Resultado será mostrado aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal do Questionário Familiar -->
+    <div id="familyQuizModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeFamilyQuizModal">&times;</span>
+            <h2 id="familyQuizTitle">Questionário para Membro da Família</h2>
+            <p id="familyQuizDescription">Responda com sinceridade para obter um diagnóstico preciso.</p>
+            
+            <div id="familyQuizQuestions">
+                <!-- Perguntas serão inseridas aqui via JavaScript -->
+            </div>
+            
+            <button class="btn" id="submitFamilyQuiz" style="display: none;">Enviar Respostas</button>
+            <div id="familyQuizResult" style="display: none;">
+                <!-- Resultado será mostrado aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Adicionar Membro da Família -->
+    <div id="familyModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeFamilyModal">&times;</span>
+            <h2>Adicionar Membro da Família</h2>
+            <form id="familyForm">
+                <div style="margin-bottom: 15px;">
+                    <label for="memberName">Nome:</label>
+                    <input type="text" id="memberName" required style="width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label for="memberAge">Idade:</label>
+                    <input type="number" id="memberAge" required style="width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label for="memberRelationship">Relacionamento:</label>
+                    <select id="memberRelationship" required style="width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px;">
+                        <option value="">Selecione...</option>
+                        <option value="pai">Pai</option>
+                        <option value="mae">Mãe</option>
+                        <option value="filho">Filho(a)</option>
+                        <option value="irmao">Irmão(ã)</option>
+                        <option value="conjuge">Cônjuge</option>
+                        <option value="outro">Outro</option>
+                    </select>
+                </div>
+                <button type="button" class="btn" onclick="adicionarMembroFamilia()">Adicionar Membro</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Centro de Recursos -->
+    <div id="resourcesModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <span class="close-modal" id="closeResourcesModal">&times;</span>
+            <div id="resourcesContent">
+                <!-- Conteúdo dos recursos será carregado aqui -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variáveis globais
+        let respostasAtuais = {};
+        let chartInstance = null;
+        let currentResource = '';
+        let currentMembroId = null;
+        let currentMembroNome = '';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Carregar dados iniciais
+            carregarDadosIniciais();
+            
+            // Botão de questionário
+            document.getElementById('startQuiz').addEventListener('click', function() {
+                abrirQuestionario();
+            });
+            
+            // Botão de adicionar membro da família
+            document.getElementById('addFamilyMember').addEventListener('click', function() {
+                document.getElementById('familyModal').style.display = 'block';
+            });
+            
+            // Botão de sair
+            document.getElementById('exitBtn').addEventListener('click', function() {
+                if(confirm('Tem certeza que deseja sair?')) {
+                    window.location.href = '/logout';
+                }
+            });
+            
+            // Fechar modais
+            document.getElementById('closeModal').addEventListener('click', function() {
+                document.getElementById('quizModal').style.display = 'none';
+            });
+            
+            document.getElementById('closeFamilyQuizModal').addEventListener('click', function() {
+                document.getElementById('familyQuizModal').style.display = 'none';
+            });
+            
+            document.getElementById('closeFamilyModal').addEventListener('click', function() {
+                document.getElementById('familyModal').style.display = 'none';
+            });
+            
+            document.getElementById('closeResourcesModal').addEventListener('click', function() {
+                document.getElementById('resourcesModal').style.display = 'none';
+            });
+            
+            // Enviar questionário
+            document.getElementById('submitQuiz').addEventListener('click', function() {
+                enviarQuestionario();
+            });
+
+            // Enviar questionário familiar
+            document.getElementById('submitFamilyQuiz').addEventListener('click', function() {
+                enviarQuestionarioFamiliar();
+            });
+        });
+
+        // Fechar modais ao clicar fora
+        window.addEventListener('click', function(event) {
+            const modals = ['quizModal', 'familyQuizModal', 'familyModal', 'resourcesModal'];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+
+        async function carregarDadosIniciais() {
+            try {
+                console.log('🔄 Carregando dados iniciais...');
+                const response = await fetch('/api/dashboard-data');
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('📊 Dados recebidos:', data);
+                    if (data.success) {
+                        atualizarInterface(data.usuario, data.ultimo_diagnostico, data.historico, data.familia_data, data.dica_do_dia, data.precisa_reavaliar);
+                    } else {
+                        throw new Error(data.error);
+                    }
+                } else {
+                    throw new Error('Erro ao carregar dados');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+                carregarDadosBasicos();
+            }
+        }
+
+        async function carregarDadosBasicos() {
+            try {
+                const authResponse = await fetch('/api/check-auth');
+                if (authResponse.ok) {
+                    const authData = await authResponse.json();
+                    if (authData.authenticated) {
+                        const usuarioBasico = {
+                            nome: authData.usuario.nome,
+                            idade: 'Não informada',
+                            email: authData.usuario.email
+                        };
+                        
+                        atualizarInterface(usuarioBasico, null, [], {}, "Complete o questionário para receber dicas personalizadas", true);
+                        return;
+                    }
+                }
+                
+                document.getElementById('userName').textContent = 'Usuário';
+                document.getElementById('profileInfo').innerHTML = '<p>Complete o questionário para ver seu perfil completo.</p>';
+                
+            } catch (error) {
+                console.error('Erro ao carregar dados básicos:', error);
+            }
+        }
+
+        function atualizarInterface(usuario, ultimoDiagnostico, historico, familiaData, dicaDoDia, precisaReavaliar) {
+            document.getElementById('userName').textContent = usuario.nome;
+            atualizarPerfil(usuario, ultimoDiagnostico);
+            atualizarResumoFamiliar(familiaData);
+            atualizarGrafico(historico);
+            
+            // Mostrar alerta se precisa reavaliar
+            if (precisaReavaliar && (!ultimoDiagnostico || (new Date() - new Date(ultimoDiagnostico.data_diagnostico)) > 30 * 24 * 60 * 60 * 1000)) {
+                mostrarAlertaReavaliacao();
+            }
+        }
+
+        function atualizarPerfil(usuario, diagnostico) {
+            const profileInfo = document.getElementById('profileInfo');
+            
+            let html = `
+                <div class="profile-item">
+                    <strong>Nome</strong>
+                    ${usuario.nome}
+                </div>
+                <div class="profile-item">
+                    <strong>Idade</strong>
+                    ${usuario.idade} ${typeof usuario.idade === 'number' ? 'anos' : ''}
+                </div>
+            `;
+            
+            if (diagnostico) {
+                const nivelClass = diagnostico.nivel ? diagnostico.nivel.toLowerCase().replace(' ', '-') : 'moderado';
+                html += `
+                    <div class="profile-item">
+                        <strong>Última Pontuação</strong>
+                        ${diagnostico.pontuacao} pontos
+                    </div>
+                    <div class="profile-item">
+                        <strong>Nível Atual</strong>
+                        <span class="nivel ${nivelClass}">${diagnostico.nivel}</span>
+                    </div>
+                    <div class="profile-item">
+                        <strong>Última Avaliação</strong>
+                        ${new Date(diagnostico.data_diagnostico).toLocaleDateString('pt-BR')}
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="profile-item">
+                        <strong>Status</strong>
+                        Complete o questionário para ver seu diagnóstico
+                    </div>
+                `;
+            }
+            
+            profileInfo.innerHTML = html;
+        }
+
+        function atualizarResumoFamiliar(familiaData) {
+            const familySummary = document.getElementById('familySummary');
+            
+            if (!familiaData.membros || familiaData.membros.length === 0) {
+                familySummary.innerHTML = '<p>Nenhum membro familiar encontrado. Adicione membros para ver o resumo familiar.</p>';
+                return;
+            }
+            
+            let html = `
+                <div class="family-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">${familiaData.total_membros}</span>
+                        <span class="stat-label">Membros</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">${familiaData.media_pontuacao}</span>
+                        <span class="stat-label">Pontuação Média</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">${familiaData.nivel_predominante}</span>
+                        <span class="stat-label">Nível Predominante</span>
+                    </div>
+                </div>
+                <div class="family-members">
+            `;
+            
+            familiaData.membros.forEach(membro => {
+                const nivelClass = membro.nivel ? membro.nivel.toLowerCase().replace(' ', '-') : 'moderado';
+                const relacionamento = membro.relacionamento ? ` (${membro.relacionamento})` : '';
+                const pontuacao = membro.pontuacao ? membro.pontuacao : 'Não avaliado';
+                const nivel = membro.nivel ? membro.nivel : 'Não avaliado';
+                
+                html += `
+                    <div class="family-member">
+                        <strong>${membro.nome}${relacionamento}</strong>
+                        <div style="margin-top: 8px;">
+                            <span class="nivel ${nivelClass}">${nivel}</span>
+                            ${pontuacao !== 'Não avaliado' ? `<span style="margin-left: 10px; color: #666;">${pontuacao} pts</span>` : ''}
+                        </div>
+                        ${membro.data_diagnostico ? `
+                        <div style="margin-top: 5px; font-size: 0.8rem; color: #888;">
+                            ${new Date(membro.data_diagnostico).toLocaleDateString('pt-BR')}
+                        </div>
+                        ` : `
+                        <div class="sem-diagnostico">⚠️ Precisa responder o questionário</div>
+                        `}
+                        <div class="botoes-membro">
+                            <button class="btn-questionario" onclick="abrirQuestionarioParaMembro(${membro.id}, '${membro.nome}')">
+                                📝 Questionário
+                            </button>
+                            <button class="btn-excluir" onclick="excluirMembroFamilia(${membro.id}, '${membro.nome}')">
+                                🗑️ Excluir
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            familySummary.innerHTML = html;
+        }
+
+        // NOVA FUNÇÃO: Abrir questionário para membro específico
+        async function abrirQuestionarioParaMembro(membroId, membroNome) {
+            currentMembroId = membroId;
+            currentMembroNome = membroNome;
+            
+            try {
+                const response = await fetch('/api/perguntas');
+                const perguntas = await response.json();
+                exibirQuestionarioFamiliar(perguntas, membroNome);
+            } catch (error) {
+                console.error('Erro ao carregar perguntas:', error);
+                alert('Erro ao carregar o questionário. Tente novamente.');
+            }
+        }
+
+        function exibirQuestionarioFamiliar(perguntas, membroNome) {
+            const quizQuestions = document.getElementById('familyQuizQuestions');
+            const submitBtn = document.getElementById('submitFamilyQuiz');
+            const quizResult = document.getElementById('familyQuizResult');
+            const quizTitle = document.getElementById('familyQuizTitle');
+            const quizDescription = document.getElementById('familyQuizDescription');
+            
+            quizTitle.textContent = `Questionário para ${membroNome}`;
+            quizDescription.textContent = `Responda as perguntas pensando nos hábitos digitais de ${membroNome}.`;
+            
+            respostasAtuais = {};
+            quizResult.style.display = 'none';
+            submitBtn.style.display = 'block';
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Responda todas as perguntas (0/' + perguntas.length + ')';
+            
+            let html = '';
+            perguntas.forEach((pergunta, index) => {
+                html += `
+                    <div class="pergunta" data-pergunta-id="${pergunta.id}">
+                        <div class="pergunta-texto">${index + 1}. ${pergunta.texto}</div>
+                        <div class="opcoes-resposta">
+                `;
+                
+                pergunta.opcoes.forEach(opcao => {
+                    html += `
+                        <div class="opcao" data-opcao-id="${opcao.id}" data-pontuacao="${opcao.pontuacao}">
+                            ${opcao.texto}
+                        </div>
+                    `;
+                });
+                
+                html += `</div></div>`;
+            });
+            
+            quizQuestions.innerHTML = html;
+            
+            document.querySelectorAll('#familyQuizQuestions .opcao').forEach(opcao => {
+                opcao.addEventListener('click', function() {
+                    const pergunta = this.closest('.pergunta');
+                    const perguntaId = pergunta.dataset.perguntaId;
+                    const opcaoId = this.dataset.opcaoId;
+                    const pontuacao = parseInt(this.dataset.pontuacao);
+                    
+                    pergunta.querySelectorAll('.opcao').forEach(o => {
+                        o.classList.remove('selecionada');
+                    });
+                    
+                    this.classList.add('selecionada');
+                    
+                    respostasAtuais[perguntaId] = {
+                        opcaoId: opcaoId,
+                        pontuacao: pontuacao
+                    };
+                    
+                    verificarCompletudeQuestionarioFamiliar(perguntas.length);
+                });
+            });
+            
+            document.getElementById('familyQuizModal').style.display = 'block';
+        }
+
+        function verificarCompletudeQuestionarioFamiliar(totalPerguntas) {
+            const submitBtn = document.getElementById('submitFamilyQuiz');
+            const respostas = Object.keys(respostasAtuais).length;
+            
+            if (respostas === totalPerguntas) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Enviar Respostas';
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.textContent = `Responda todas as perguntas (${respostas}/${totalPerguntas})`;
+            }
+        }
+
+        async function enviarQuestionarioFamiliar() {
+            try {
+                const respostasArray = Object.entries(respostasAtuais).map(([perguntaId, resposta]) => ({
+                    perguntaId: parseInt(perguntaId),
+                    opcaoId: parseInt(resposta.opcaoId),
+                    pontuacao: resposta.pontuacao
+                }));
+                
+                const response = await fetch(`/api/familia/membros/${currentMembroId}/diagnostico`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        respostas: respostasArray
+                    })
+                });
+                
+                const resultado = await response.json();
+                
+                if (resultado.success) {
+                    exibirResultadoQuestionarioFamiliar(resultado);
+                } else {
+                    throw new Error(resultado.error);
+                }
+                
+            } catch (error) {
+                console.error('Erro ao enviar questionário familiar:', error);
+                alert('Erro ao enviar questionário. Tente novamente.');
+            }
+        }
+
+        function exibirResultadoQuestionarioFamiliar(resultado) {
+            const quizResult = document.getElementById('familyQuizResult');
+            const submitBtn = document.getElementById('submitFamilyQuiz');
+            
+            submitBtn.style.display = 'none';
+            
+            const nivelClass = resultado.diagnostico.nivel.toLowerCase().replace(' ', '-');
+            
+            let html = `
+                <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 8px; margin: 20px 0;">
+                    <h3>Resultado para ${currentMembroNome}</h3>
+                    <div style="font-size: 2rem; font-weight: bold; margin: 10px 0;">
+                        ${resultado.diagnostico.pontuacao} Pontos
+                    </div>
+                    <div style="margin: 15px 0;">
+                        <span class="nivel ${nivelClass}" style="font-size: 1.2rem;">
+                            ${resultado.diagnostico.nivel}
+                        </span>
+                    </div>
+                    <p>Data do diagnóstico: ${new Date(resultado.diagnostico.data_diagnostico).toLocaleDateString('pt-BR')}</p>
+                </div>
+            `;
+            
+            if (resultado.solucoes && resultado.solucoes.length > 0) {
+                html += `
+                    <div class="solucoes-list">
+                        <h4>Sugestões para ${currentMembroNome}:</h4>
+                        <div>
+                `;
+                
+                resultado.solucoes.forEach((solucao, index) => {
+                    html += `<div class="solucao-item">${index + 1}. ${solucao}</div>`;
+                });
+                
+                html += `</div></div>`;
+            }
+            
+            html += `
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn" onclick="fecharQuestionarioFamiliarERecarregar()">Fechar e Ver Dashboard</button>
+                </div>
+            `;
+            
+            quizResult.innerHTML = html;
+            quizResult.style.display = 'block';
+        }
+
+        function fecharQuestionarioFamiliarERecarregar() {
+            document.getElementById('familyQuizModal').style.display = 'none';
+            carregarDadosIniciais();
+        }
+
+        function atualizarGrafico(historico) {
+            const ctx = document.getElementById('chartCanvas').getContext('2d');
+            
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+            
+            if (!historico || historico.length === 0) {
+                document.getElementById('progressChart').innerHTML = `
+                    <div class="chart-placeholder">
+                        Complete seu primeiro questionário para ver seu progresso
+                    </div>
+                `;
+                return;
+            }
+            
+            const datas = historico.map(item => 
+                new Date(item.data_diagnostico).toLocaleDateString('pt-BR')
+            );
+            const pontuacoes = historico.map(item => item.pontuacao);
+            
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: datas,
+                    datasets: [{
+                        label: 'Pontuação de Dependência',
+                        data: pontuacoes,
+                        borderColor: '#4a6baf',
+                        backgroundColor: 'rgba(74, 107, 175, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 50,
+                            title: {
+                                display: true,
+                                text: 'Pontuação'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Data da Avaliação'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function mostrarAlertaReavaliacao() {
+            const welcomeSection = document.querySelector('.welcome');
+            const alerta = document.createElement('div');
+            alerta.className = 'reavaliacao-alerta';
+            alerta.innerHTML = `
+                <strong>⏰ Hora da Reavaliação!</strong>
+                <p>Faz mais de 30 dias desde sua última avaliação. Faça o questionário novamente para atualizar seu diagnóstico.</p>
+            `;
+            welcomeSection.parentNode.insertBefore(alerta, welcomeSection.nextSibling);
+        }
+
+        // FUNÇÃO NOVA: Excluir membro da família
+        async function excluirMembroFamilia(membroId, nomeMembro) {
+            if (!confirm(`Tem certeza que deseja excluir ${nomeMembro} da família?`)) {
+                return;
+            }
+            
+            try {
+                console.log(`🗑️ Excluindo membro ${membroId} - ${nomeMembro}`);
+                
+                const response = await fetch(`/api/familia/membros/${membroId}`, {
+                    method: 'DELETE'
+                });
+                
+                const resultado = await response.json();
+                console.log('📨 Resposta da exclusão:', resultado);
+                
+                if (resultado.success) {
+                    alert('✅ ' + resultado.message);
+                    // Recarregar dados para atualizar a interface
+                    await carregarDadosIniciais();
+                    console.log('🗑️ Membro excluído com sucesso!');
+                } else {
+                    alert('❌ Erro: ' + resultado.error);
+                    console.error('Erro da API:', resultado.error);
+                }
+                
+            } catch (error) {
+                console.error('❌ Erro completo ao excluir membro:', error);
+                alert('❌ Erro ao excluir membro. Verifique o console para detalhes.');
+            }
+        }
+
+        // Funções do Centro de Recursos (mantidas iguais)
+        async function abrirDicasPersonalizadas() {
+            currentResource = 'dicas';
+            const response = await fetch('/api/dashboard-data');
+            const data = await response.json();
+            
+            let html = '<h2>💡 Dicas Personalizadas</h2>';
+            
+            if (data.ultimo_diagnostico) {
+                const solucoes = await obterSolucoesPorNivel(data.ultimo_diagnostico.nivel);
+                html += `
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 15px 0;">
+                        <h4>Seu diagnóstico atual: <span class="nivel ${data.ultimo_diagnostico.nivel.toLowerCase().replace(' ', '-')}">${data.ultimo_diagnostico.nivel}</span></h4>
+                        <p>Pontuação: ${data.ultimo_diagnostico.pontuacao} pontos</p>
+                    </div>
+                    <div class="solucoes-list">
+                        <h4>Sugestões para melhorar seu bem-estar digital:</h4>
+                        ${solucoes.map((solucao, index) => `<div class="solucao-item">${index + 1}. ${solucao}</div>`).join('')}
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div style="text-align: center; padding: 40px;">
+                        <p>Complete o questionário para receber dicas personalizadas.</p>
+                        <button class="btn" onclick="abrirQuestionario()">Fazer Questionário</button>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('resourcesContent').innerHTML = html;
+            document.getElementById('resourcesModal').style.display = 'block';
+        }
+
+        async function abrirPanoramaFamilia() {
+            currentResource = 'panorama';
+            const response = await fetch('/api/familia');
+            const data = await response.json();
+            
+            let html = '<h2>👨‍👩‍👧‍👦 Panorama da Família</h2>';
+            
+            if (data.membros && data.membros.length > 0) {
+                // Calcular distribuição dos níveis
+                const niveis = {};
+                data.membros.forEach(membro => {
+                    const nivel = membro.nivel || 'Não avaliado';
+                    niveis[nivel] = (niveis[nivel] || 0) + 1;
+                });
+                
+                html += `
+                    <div class="family-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">${data.total_membros}</span>
+                            <span class="stat-label">Total de Membros</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">${data.media_pontuacao}</span>
+                            <span class="stat-label">Pontuação Média</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">${data.nivel_predominante}</span>
+                            <span class="stat-label">Nível Predominante</span>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <h4>Distribuição dos Níveis:</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 15px;">
+                `;
+                
+                for (const [nivel, quantidade] of Object.entries(niveis)) {
+                    const nivelClass = nivel.toLowerCase().replace(' ', '-');
+                    html += `
+                        <div style="text-align: center; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                            <div style="font-size: 1.5rem; font-weight: bold;">${quantidade}</div>
+                            <div class="nivel ${nivelClass}">${nivel}</div>
+                        </div>
+                    `;
+                }
+                
+                html += `</div></div>`;
+            } else {
+                html += `
+                    <div style="text-align: center; padding: 40px;">
+                        <p>Nenhum membro familiar encontrado.</p>
+                        <button class="btn" onclick="document.getElementById('familyModal').style.display = 'block'">Adicionar Primeiro Membro</button>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('resourcesContent').innerHTML = html;
+            document.getElementById('resourcesModal').style.display = 'block';
+        }
+
+        async function abrirAutoavaliacao() {
+            currentResource = 'autoavaliacao';
+            
+            // Buscar reflexões salvas
+            let reflexoesSalvas = {};
+            try {
+                const response = await fetch('/api/reflexoes');
+                const data = await response.json();
+                if (data.success && data.reflexoes) {
+                    reflexoesSalvas = data.reflexoes;
+                }
+            } catch (error) {
+                console.error('Erro ao carregar reflexões:', error);
+            }
+            
+            const perguntasReflexao = [
+                "Como você se sentiu sem internet hoje?",
+                "Quais atividades offline você realizou hoje?",
+                "O que você aprendeu sobre seus hábitos digitais esta semana?",
+                "Quais benefícios você notou ao reduzir o tempo de tela?",
+                "Que estratégias funcionaram para você manter o equilíbrio digital?"
+            ];
+            
+            let html = `
+                <h2>📝 Autoavaliação e Reflexão</h2>
+                <p>Reflita sobre suas experiências e sentimentos em relação ao uso da tecnologia:</p>
+            `;
+            
+            perguntasReflexao.forEach((pergunta, index) => {
+                const respostaSalva = reflexoesSalvas[pergunta] ? reflexoesSalvas[pergunta].resposta : '';
+                html += `
+                    <div class="reflection-question">
+                        <label>${pergunta}</label>
+                        <textarea id="reflection${index}" placeholder="Escreva sua reflexão aqui...">${respostaSalva}</textarea>
+                    </div>
+                `;
+            });
+            
+            html += `
+                <button class="btn" onclick="salvarReflexoes()">Salvar Reflexões</button>
+                ${Object.keys(reflexoesSalvas).length > 0 ? 
+                  '<p style="color: green; margin-top: 10px;">✅ Você tem reflexões salvas anteriores</p>' : ''}
+            `;
+            
+            document.getElementById('resourcesContent').innerHTML = html;
+            document.getElementById('resourcesModal').style.display = 'block';
+        }
+
+        async function abrirPlanoAcao() {
+            currentResource = 'planoacao';
+            const response = await fetch('/api/dashboard-data');
+            const data = await response.json();
+            
+            let html = '<h2>✅ Plano de Ação Pessoal</h2>';
+            
+            if (data.ultimo_diagnostico) {
+                const solucoes = await obterSolucoesPorNivel(data.ultimo_diagnostico.nivel);
+                
+                html += `
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <p>Baseado no seu nível atual: <strong>${data.ultimo_diagnostico.nivel}</strong></p>
+                        <p>Pontuação: ${data.ultimo_diagnostico.pontuacao} pontos</p>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <h4>Seu Plano de Ação Personalizado:</h4>
+                        <p>Marque as ações conforme for realizando-as:</p>
+                `;
+                
+                solucoes.forEach((solucao, index) => {
+                    const completed = localStorage.getItem(`acao_${data.ultimo_diagnostico.nivel}_${index}`) === 'true';
+                    html += `
+                        <div class="action-item ${completed ? 'completed' : ''}">
+                            <input type="checkbox" id="acao${index}" ${completed ? 'checked' : ''} onchange="marcarAcao('${data.ultimo_diagnostico.nivel}', ${index}, this.checked)">
+                            <label for="acao${index}">${solucao}</label>
+                        </div>
+                    `;
+                });
+                
+                html += `</div>`;
+            } else {
+                html += `
+                    <div style="text-align: center; padding: 40px;">
+                        <p>Complete o questionário para criar um plano de ação personalizado.</p>
+                        <button class="btn" onclick="abrirQuestionario()">Fazer Questionário</button>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('resourcesContent').innerHTML = html;
+            document.getElementById('resourcesModal').style.display = 'block';
+        }
+
+        async function obterSolucoesPorNivel(nivel) {
+            try {
+                const response = await fetch(`/api/solucoes/${nivel}`);
+                const data = await response.json();
+                return data.solucoes || [];
+            } catch (error) {
+                console.error('Erro ao obter soluções:', error);
+                return [
+                    "Estabeleça limites de tempo para uso da internet",
+                    "Pratique atividades offline regularmente",
+                    "Desative notificações não essenciais",
+                    "Estabeleça zonas livres de dispositivos em casa",
+                    "Pratique a técnica Pomodoro para gestão do tempo",
+                    "Mantenha um diário de uso da internet",
+                    "Estabeleça metas realistas de redução",
+                    "Desenvolva hobbies offline"
+                ];
+            }
+        }
+
+        async function salvarReflexoes() {
+            const perguntasReflexao = [
+                "Como você se sentiu sem internet hoje?",
+                "Quais atividades offline você realizou hoje?",
+                "O que você aprendeu sobre seus hábitos digitais esta semana?",
+                "Quais benefícios você notou ao reduzir o tempo de tela?",
+                "Que estratégias funcionaram para você manter o equilíbrio digital?"
+            ];
+            
+            const reflexoes = {};
+            let todasVazias = true;
+            
+            perguntasReflexao.forEach((pergunta, index) => {
+                const resposta = document.getElementById(`reflection${index}`).value;
+                reflexoes[pergunta] = resposta;
+                if (resposta && resposta.trim()) {
+                    todasVazias = false;
+                }
+            });
+            
+            if (todasVazias) {
+                alert('Por favor, escreva pelo menos uma reflexão antes de salvar.');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/reflexoes', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        reflexoes: reflexoes
+                    })
+                });
+                
+                const resultado = await response.json();
+                
+                if (resultado.success) {
+                    alert('Suas reflexões foram salvas com sucesso!');
+                    document.getElementById('resourcesModal').style.display = 'none';
+                } else {
+                    alert('Erro ao salvar reflexões: ' + resultado.error);
+                }
+                
+            } catch (error) {
+                console.error('Erro ao salvar reflexões:', error);
+                alert('Erro ao salvar reflexões. Tente novamente.');
+            }
+        }
+
+        function marcarAcao(nivel, index, completada) {
+            localStorage.setItem(`acao_${nivel}_${index}`, completada);
+            const actionItem = document.querySelector(`#acao${index}`).closest('.action-item');
+            if (completada) {
+                actionItem.classList.add('completed');
+            } else {
+                actionItem.classList.remove('completed');
+            }
+        }
+
+        // CORREÇÃO DA FUNÇÃO ADICIONAR MEMBRO DA FAMÍLIA
+        async function adicionarMembroFamilia() {
+            const nome = document.getElementById('memberName').value;
+            const idade = document.getElementById('memberAge').value;
+            const relacionamento = document.getElementById('memberRelationship').value;
+            
+            if (!nome || !idade || !relacionamento) {
+                alert('Por favor, preencha todos os campos.');
+                return;
+            }
+            
+            if (idade < 1 || idade > 120) {
+                alert('Por favor, insira uma idade válida (1-120).');
+                return;
+            }
+            
+            try {
+                console.log('🔄 Enviando dados para API...', { nome, idade, relacionamento });
+                
+                const response = await fetch('/api/familia/membros', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        nome: nome,
+                        idade: parseInt(idade),
+                        relacionamento: relacionamento
+                    })
+                });
+                
+                const resultado = await response.json();
+                console.log('📨 Resposta da API:', resultado);
+                
+                if (resultado.success) {
+                    alert('✅ ' + resultado.message);
+                    // Limpar formulário e fechar modal
+                    document.getElementById('familyForm').reset();
+                    document.getElementById('familyModal').style.display = 'none';
+                    // Recarregar dados para atualizar a interface
+                    await carregarDadosIniciais();
+                    console.log('🎉 Membro adicionado com sucesso!');
+                } else {
+                    alert('❌ Erro: ' + resultado.error);
+                    console.error('Erro da API:', resultado.error);
+                }
+                
+            } catch (error) {
+                console.error('❌ Erro completo ao adicionar membro:', error);
+                alert('❌ Erro ao adicionar membro. Verifique o console para detalhes.');
+            }
+        }
+
+        // Funções do questionário (mantidas iguais)
+        async function abrirQuestionario() {
+            try {
+                const response = await fetch('/api/perguntas');
+                const perguntas = await response.json();
+                exibirQuestionario(perguntas);
+            } catch (error) {
+                console.error('Erro ao carregar perguntas:', error);
+                alert('Erro ao carregar o questionário. Tente novamente.');
+            }
+        }
+
+        function exibirQuestionario(perguntas) {
+            const quizQuestions = document.getElementById('quizQuestions');
+            const submitBtn = document.getElementById('submitQuiz');
+            const quizResult = document.getElementById('quizResult');
+            
+            respostasAtuais = {};
+            quizResult.style.display = 'none';
+            submitBtn.style.display = 'block';
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Responda todas as perguntas (0/' + perguntas.length + ')';
+            
+            let html = '';
+            perguntas.forEach((pergunta, index) => {
+                html += `
+                    <div class="pergunta" data-pergunta-id="${pergunta.id}">
+                        <div class="pergunta-texto">${index + 1}. ${pergunta.texto}</div>
+                        <div class="opcoes-resposta">
+                `;
+                
+                pergunta.opcoes.forEach(opcao => {
+                    html += `
+                        <div class="opcao" data-opcao-id="${opcao.id}" data-pontuacao="${opcao.pontuacao}">
+                            ${opcao.texto}
+                        </div>
+                    `;
+                });
+                
+                html += `</div></div>`;
+            });
+            
+            quizQuestions.innerHTML = html;
+            
+            document.querySelectorAll('.opcao').forEach(opcao => {
+                opcao.addEventListener('click', function() {
+                    const pergunta = this.closest('.pergunta');
+                    const perguntaId = pergunta.dataset.perguntaId;
+                    const opcaoId = this.dataset.opcaoId;
+                    const pontuacao = parseInt(this.dataset.pontuacao);
+                    
+                    pergunta.querySelectorAll('.opcao').forEach(o => {
+                        o.classList.remove('selecionada');
+                    });
+                    
+                    this.classList.add('selecionada');
+                    
+                    respostasAtuais[perguntaId] = {
+                        opcaoId: opcaoId,
+                        pontuacao: pontuacao
+                    };
+                    
+                    verificarCompletudeQuestionario(perguntas.length);
+                });
+            });
+            
+            document.getElementById('quizModal').style.display = 'block';
+        }
+
+        function verificarCompletudeQuestionario(totalPerguntas) {
+            const submitBtn = document.getElementById('submitQuiz');
+            const respostas = Object.keys(respostasAtuais).length;
+            
+            if (respostas === totalPerguntas) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Enviar Respostas';
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.textContent = `Responda todas as perguntas (${respostas}/${totalPerguntas})`;
+            }
+        }
+
+        async function enviarQuestionario() {
+            try {
+                const respostasArray = Object.entries(respostasAtuais).map(([perguntaId, resposta]) => ({
+                    perguntaId: parseInt(perguntaId),
+                    opcaoId: parseInt(resposta.opcaoId),
+                    pontuacao: resposta.pontuacao
+                }));
+                
+                const response = await fetch('/api/diagnostico', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        respostas: respostasArray
+                    })
+                });
+                
+                const resultado = await response.json();
+                
+                if (resultado.success) {
+                    exibirResultadoQuestionario(resultado);
+                } else {
+                    throw new Error(resultado.error);
+                }
+                
+            } catch (error) {
+                console.error('Erro ao enviar questionário:', error);
+                alert('Erro ao enviar questionário. Tente novamente.');
+            }
+        }
+
+        function exibirResultadoQuestionario(resultado) {
+            const quizResult = document.getElementById('quizResult');
+            const submitBtn = document.getElementById('submitQuiz');
+            
+            submitBtn.style.display = 'none';
+            
+            const nivelClass = resultado.diagnostico.nivel.toLowerCase().replace(' ', '-');
+            
+            let html = `
+                <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 8px; margin: 20px 0;">
+                    <h3>Seu Resultado</h3>
+                    <div style="font-size: 2rem; font-weight: bold; margin: 10px 0;">
+                        ${resultado.diagnostico.pontuacao} Pontos
+                    </div>
+                    <div style="margin: 15px 0;">
+                        <span class="nivel ${nivelClass}" style="font-size: 1.2rem;">
+                            ${resultado.diagnostico.nivel}
+                        </span>
+                    </div>
+                    <p>Data do diagnóstico: ${new Date(resultado.diagnostico.data_diagnostico).toLocaleDateString('pt-BR')}</p>
+                </div>
+            `;
+            
+            if (resultado.solucoes && resultado.solucoes.length > 0) {
+                html += `
+                    <div class="solucoes-list">
+                        <h4>Sugestões para você:</h4>
+                        <div>
+                `;
+                
+                resultado.solucoes.forEach((solucao, index) => {
+                    html += `<div class="solucao-item">${index + 1}. ${solucao}</div>`;
+                });
+                
+                html += `</div></div>`;
+            }
+            
+            html += `
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn" onclick="fecharQuestionarioERecarregar()">Fechar e Ver Dashboard</button>
+                </div>
+            `;
+            
+            quizResult.innerHTML = html;
+            quizResult.style.display = 'block';
+        }
+
+        function fecharQuestionarioERecarregar() {
+            document.getElementById('quizModal').style.display = 'none';
+            carregarDadosIniciais();
+        }
+    </script>
 </body>
 </html>
