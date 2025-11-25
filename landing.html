@@ -20,6 +20,7 @@
             --accent: #2F7CF6;
             --cta-hover: #ff5252;
             --bg-contrast: #f8f9fa;
+            --success: #28a745;
         }
 
         /* Header / Nav fixo */
@@ -117,6 +118,25 @@
 
         .cta-button:hover {
             background: var(--cta-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+
+        .cta-button-success {
+            background: var(--success);
+        }
+
+        .cta-button-success:hover {
+            background: #218838;
+        }
+
+        .cta-button-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .cta-button-secondary:hover {
+            background-color: #5a6268;
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.15);
         }
@@ -239,8 +259,10 @@
             margin: 50px auto;
             padding: 30px;
             border-radius: 12px;
-            max-width: 400px;
+            max-width: 500px;
             position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .close-modal {
@@ -262,7 +284,7 @@
             font-weight: bold;
         }
 
-        .form-group input {
+        .form-group input, .form-group select {
             width: 100%;
             padding: 0.8rem;
             border: 2px solid #ddd;
@@ -270,7 +292,7 @@
             font-size: 1rem;
         }
 
-        .form-group input:focus {
+        .form-group input:focus, .form-group select:focus {
             border-color: var(--accent);
             outline: none;
         }
@@ -300,6 +322,102 @@
             color: var(--accent);
             text-decoration: none;
             cursor: pointer;
+        }
+
+        /* Modal de Instituições */
+        .instituicoes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .instituicao-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        .instituicao-nome {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-1);
+            margin-bottom: 0.5rem;
+        }
+
+        .profissional-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            border-left: 3px solid var(--success);
+        }
+
+        .profissional-nome {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .profissao {
+            color: #666;
+            font-style: italic;
+        }
+
+        .instituicao-info {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #ddd;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin: 0.3rem 0;
+            color: #555;
+        }
+
+        .info-item i {
+            margin-right: 0.5rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Alertas */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* Responsividade */
@@ -336,6 +454,15 @@
             .cta-button {
                 margin: 5px 0;
             }
+
+            .modal-content {
+                margin: 20px;
+                padding: 20px;
+            }
+
+            .instituicoes-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -365,7 +492,8 @@
                 <h2>Supere a dependência da internet com ferramentas baseadas em ciência, questionários personalizados e apoio contínuo.</h2>
                 <div class="cta-buttons">
                     <button class="cta-button" id="btnComecar">Comece Sua Jornada</button>
-                    <button class="cta-button" id="btnLogin">Fazer Login</button>
+                    <button class="cta-button cta-button-success" id="btnCadastrarInstituicao">Cadastrar Instituição</button>
+                    <button class="cta-button cta-button-secondary" id="btnAvaliacaoGeral">Avaliação Geral</button>
                 </div>
             </div>
         </section>
@@ -445,7 +573,9 @@
                     <label for="loginSenha">Senha</label>
                     <input type="password" id="loginSenha" required>
                 </div>
-                <button type="submit" class="form-submit">Entrar</button>
+                <button type="submit" class="form-submit" id="loginSubmit">
+                    <span id="loginText">Entrar</span>
+                </button>
             </form>
             <div class="form-toggle">
                 Não tem conta? <a id="showCadastro">Cadastre-se</a>
@@ -479,10 +609,85 @@
                     <label for="cadastroConfirmarSenha">Confirmar Senha</label>
                     <input type="password" id="cadastroConfirmarSenha" required>
                 </div>
-                <button type="submit" class="form-submit">Criar Conta</button>
+                <button type="submit" class="form-submit" id="cadastroSubmit">
+                    <span id="cadastroText">Criar Conta</span>
+                </button>
             </form>
             <div class="form-toggle">
                 Já tem conta? <a id="showLogin">Fazer Login</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Cadastro de Instituição -->
+    <div id="instituicaoModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeInstituicaoModal">&times;</span>
+            <h2 style="text-align: center; margin-bottom: 1.5rem;">Cadastrar Instituição</h2>
+            <div id="instituicaoAlert"></div>
+            <form id="instituicaoForm">
+                <div class="form-group">
+                    <label for="instituicaoNome">Nome da Instituição *</label>
+                    <input type="text" id="instituicaoNome" required>
+                </div>
+                <div class="form-group">
+                    <label for="instituicaoTipo">Tipo de Instituição *</label>
+                    <select id="instituicaoTipo" required>
+                        <option value="">Selecione o tipo...</option>
+                        <option value="Clínica">Clínica</option>
+                        <option value="Hospital">Hospital</option>
+                        <option value="Instituto">Instituto</option>
+                        <option value="Centro de Saúde">Centro de Saúde</option>
+                        <option value="Consultório">Consultório</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="instituicaoEndereco">Endereço Completo</label>
+                    <input type="text" id="instituicaoEndereco" placeholder="Rua, número, bairro, cidade - Estado">
+                </div>
+                <div class="form-group">
+                    <label for="instituicaoTelefone">Telefone *</label>
+                    <input type="tel" id="instituicaoTelefone" placeholder="(00) 00000-0000" required>
+                </div>
+                <div class="form-group">
+                    <label for="instituicaoEmail">E-mail *</label>
+                    <input type="email" id="instituicaoEmail" required>
+                </div>
+                
+                <h3 style="margin: 1.5rem 0 1rem 0;">Profissionais</h3>
+                
+                <div class="form-group">
+                    <label for="profissional1Nome">Nome do Psicólogo *</label>
+                    <input type="text" id="profissional1Nome" required>
+                </div>
+                <div class="form-group">
+                    <label for="profissional1Profissao">Profissão</label>
+                    <input type="text" id="profissional1Profissao" value="Psicólogo" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="profissional2Nome">Nome do Psiquiatra *</label>
+                    <input type="text" id="profissional2Nome" required>
+                </div>
+                <div class="form-group">
+                    <label for="profissional2Profissao">Profissão</label>
+                    <input type="text" id="profissional2Profissao" value="Psiquiatra" readonly>
+                </div>
+
+                <button type="submit" class="form-submit" id="instituicaoSubmit">
+                    <span id="instituicaoText">Cadastrar Instituição</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Visualização de Instituições -->
+    <div id="visualizarInstituicoesModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <span class="close-modal" id="closeVisualizarInstituicoesModal">&times;</span>
+            <h2 style="text-align: center; margin-bottom: 1.5rem;">Instituições de Apoio e Profissionais</h2>
+            <div id="instituicoesLista" class="instituicoes-grid">
+                <!-- As instituições serão carregadas aqui dinamicamente -->
             </div>
         </div>
     </div>
@@ -491,26 +696,47 @@
         // Elementos do DOM
         const loginModal = document.getElementById('loginModal');
         const cadastroModal = document.getElementById('cadastroModal');
+        const instituicaoModal = document.getElementById('instituicaoModal');
+        const visualizarInstituicoesModal = document.getElementById('visualizarInstituicoesModal');
+        
         const btnEntrar = document.getElementById('btnEntrar');
         const btnComecar = document.getElementById('btnComecar');
-        const btnLogin = document.getElementById('btnLogin');
+        const btnCadastrarInstituicao = document.getElementById('btnCadastrarInstituicao');
+        const btnAvaliacaoGeral = document.getElementById('btnAvaliacaoGeral');
+        
         const closeLoginModal = document.getElementById('closeLoginModal');
         const closeCadastroModal = document.getElementById('closeCadastroModal');
+        const closeInstituicaoModal = document.getElementById('closeInstituicaoModal');
+        const closeVisualizarInstituicoesModal = document.getElementById('closeVisualizarInstituicoesModal');
+        
         const showCadastro = document.getElementById('showCadastro');
         const showLogin = document.getElementById('showLogin');
+        
         const loginForm = document.getElementById('loginForm');
         const cadastroForm = document.getElementById('cadastroForm');
+        const instituicaoForm = document.getElementById('instituicaoForm');
+        
+        const instituicoesLista = document.getElementById('instituicoesLista');
+        const instituicaoAlert = document.getElementById('instituicaoAlert');
 
         // Abrir modais
         btnEntrar.addEventListener('click', () => loginModal.style.display = 'block');
         btnComecar.addEventListener('click', () => cadastroModal.style.display = 'block');
-        btnLogin.addEventListener('click', () => loginModal.style.display = 'block');
+        btnCadastrarInstituicao.addEventListener('click', () => instituicaoModal.style.display = 'block');
+
+        // ✅ CORREÇÃO APLICADA: Botão de avaliação geral corrigido
+        btnAvaliacaoGeral.addEventListener('click', () => {
+            console.log('📍 Redirecionando para avaliação geral...');
+            window.location.href = '/avaliacao-geral';
+        });
 
         // Fechar modais
         closeLoginModal.addEventListener('click', () => loginModal.style.display = 'none');
         closeCadastroModal.addEventListener('click', () => cadastroModal.style.display = 'none');
+        closeInstituicaoModal.addEventListener('click', () => instituicaoModal.style.display = 'none');
+        closeVisualizarInstituicoesModal.addEventListener('click', () => visualizarInstituicoesModal.style.display = 'none');
 
-        // Alternar entre modais
+        // Alternar entre modais de login/cadastro
         showCadastro.addEventListener('click', () => {
             loginModal.style.display = 'none';
             cadastroModal.style.display = 'block';
@@ -525,11 +751,267 @@
         window.addEventListener('click', (e) => {
             if (e.target === loginModal) loginModal.style.display = 'none';
             if (e.target === cadastroModal) cadastroModal.style.display = 'none';
+            if (e.target === instituicaoModal) instituicaoModal.style.display = 'none';
+            if (e.target === visualizarInstituicoesModal) visualizarInstituicoesModal.style.display = 'none';
         });
+
+        // Formatação do telefone
+        document.getElementById('instituicaoTelefone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length <= 11) {
+                value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                value = value.replace(/(\d{5})(\d)/, '$1-$2');
+                e.target.value = value;
+            }
+        });
+
+        // Função para mostrar alerta
+        function mostrarAlerta(mensagem, tipo, elemento) {
+            elemento.innerHTML = `
+                <div class="alert alert-${tipo}">
+                    ${mensagem}
+                </div>
+            `;
+            setTimeout(() => {
+                elemento.innerHTML = '';
+            }, 5000);
+        }
+
+        // Função para mostrar loading no botão
+        function mostrarLoading(botao, texto) {
+            const textElement = botao.querySelector('span');
+            textElement.innerHTML = `<div class="loading"></div>${texto}`;
+            botao.disabled = true;
+        }
+
+        // Função para remover loading do botão
+        function removerLoading(botao, textoOriginal) {
+            const textElement = botao.querySelector('span');
+            textElement.textContent = textoOriginal;
+            botao.disabled = false;
+        }
+
+        // Submit do formulário de cadastro de instituição - CORRIGIDO
+        instituicaoForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            console.log("📝 Iniciando cadastro de instituição...");
+            
+            const submitBtn = document.getElementById('instituicaoSubmit');
+            mostrarLoading(submitBtn, 'Cadastrando...');
+            
+            const instituicaoData = {
+                nome: document.getElementById('instituicaoNome').value,
+                tipo: document.getElementById('instituicaoTipo').value,
+                endereco: document.getElementById('instituicaoEndereco').value,
+                telefone: document.getElementById('instituicaoTelefone').value,
+                email: document.getElementById('instituicaoEmail').value,
+                descricao: "Instituição cadastrada via formulário pública",
+                especialidades: "Psicologia, Psiquiatria"
+            };
+
+            console.log("📤 Enviando dados:", instituicaoData);
+
+            try {
+                const response = await fetch('/api/instituicoes/cadastrar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(instituicaoData)
+                });
+
+                const result = await response.json();
+                console.log("📥 Resposta recebida:", result);
+
+                if (result.success) {
+                    mostrarAlerta('✅ Instituição cadastrada com sucesso! Agora cadastrando profissionais...', 'success', instituicaoAlert);
+                    
+                    // Cadastrar os profissionais automaticamente
+                    await cadastrarProfissionais(result.instituicao_id);
+                    
+                    setTimeout(() => {
+                        instituicaoModal.style.display = 'none';
+                        instituicaoForm.reset();
+                        removerLoading(submitBtn, 'Cadastrar Instituição');
+                    }, 2000);
+                    
+                } else {
+                    mostrarAlerta('❌ Erro: ' + result.error, 'error', instituicaoAlert);
+                    removerLoading(submitBtn, 'Cadastrar Instituição');
+                }
+            } catch (error) {
+                console.error('❌ Erro completo:', error);
+                mostrarAlerta('❌ Erro ao cadastrar instituição. Tente novamente.', 'error', instituicaoAlert);
+                removerLoading(submitBtn, 'Cadastrar Instituição');
+            }
+        });
+
+        // Função para cadastrar profissionais automaticamente
+        async function cadastrarProfissionais(instituicaoId) {
+            console.log("👨‍⚕️ Cadastrando profissionais para instituição:", instituicaoId);
+            
+            const profissionais = [
+                {
+                    nome: document.getElementById('profissional1Nome').value,
+                    profissao: "Psicólogo",
+                    especialidade: "Dependência Digital",
+                    instituicao_id: instituicaoId,
+                    registro_profissional: "CRP - Em cadastro",
+                    abordagem: "Terapia Cognitivo-Comportamental",
+                    descricao: "Profissional cadastrado via formulário pública"
+                },
+                {
+                    nome: document.getElementById('profissional2Nome').value,
+                    profissao: "Psiquiatra", 
+                    especialidade: "Saúde Mental Digital",
+                    instituicao_id: instituicaoId,
+                    registro_profissional: "CRM - Em cadastro",
+                    abordagem: "Medicina Integrativa",
+                    descricao: "Profissional cadastrado via formulário pública"
+                }
+            ];
+
+            let profissionaisCadastrados = 0;
+
+            for (const profissional of profissionais) {
+                try {
+                    console.log("📤 Cadastrando profissional:", profissional.nome);
+                    
+                    const response = await fetch('/api/profissionais/cadastrar', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(profissional)
+                    });
+
+                    const result = await response.json();
+                    console.log("📥 Resposta profissional:", result);
+
+                    if (result.success) {
+                        profissionaisCadastrados++;
+                        console.log(`✅ Profissional ${profissional.nome} cadastrado com sucesso!`);
+                    } else {
+                        console.error("❌ Erro ao cadastrar profissional:", result.error);
+                    }
+                } catch (error) {
+                    console.error("❌ Erro no cadastro do profissional:", error);
+                }
+            }
+            
+            console.log(`✅ ${profissionaisCadastrados} de ${profissionais.length} profissionais cadastrados com sucesso!`);
+        }
+
+        // Função para carregar e exibir instituições - CORRIGIDA
+        async function carregarInstituicoes() {
+            console.log("🔄 Carregando instituições...");
+            
+            try {
+                const response = await fetch('/api/instituicoes');
+                const data = await response.json();
+                
+                console.log("📊 Dados recebidos:", data);
+                
+                instituicoesLista.innerHTML = '';
+                
+                if (!data.success) {
+                    instituicoesLista.innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                            <h3>❌ Erro ao carregar instituições</h3>
+                            <p>${data.error || 'Erro desconhecido'}</p>
+                            <button class="cta-button" onclick="carregarInstituicoes()" style="margin-top: 1rem;">
+                                🔄 Tentar Novamente
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const instituicoes = data.instituicoes;
+                
+                if (!instituicoes || instituicoes.length === 0) {
+                    instituicoesLista.innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #666;">
+                            <h3>🏥 Nenhuma instituição cadastrada</h3>
+                            <p>No momento não há instituições de apoio disponíveis.</p>
+                            <p>As instituições podem ser cadastradas usando o botão "Cadastrar Instituição".</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                instituicoes.forEach(instituicao => {
+                    const instituicaoCard = document.createElement('div');
+                    instituicaoCard.className = 'instituicao-card';
+                    
+                    let profissionaisHTML = '';
+                    if (instituicao.profissionais && instituicao.profissionais.length > 0) {
+                        instituicao.profissionais.forEach(profissional => {
+                            profissionaisHTML += `
+                                <div class="profissional-item">
+                                    <div class="profissional-nome">${profissional.nome || 'Nome não informado'}</div>
+                                    <div class="profissao">${profissional.profissao || 'Profissão não informada'} - ${profissional.especialidade || 'Especialidade não informada'}</div>
+                                    ${profissional.registro_profissional ? `<div style="font-size: 0.8rem; color: #666;">Registro: ${profissional.registro_profissional}</div>` : ''}
+                                    ${profissional.abordagem ? `<div style="font-size: 0.8rem; color: #666;">Abordagem: ${profissional.abordagem}</div>` : ''}
+                                </div>
+                            `;
+                        });
+                    } else {
+                        profissionaisHTML = '<p style="color: #666; font-style: italic; padding: 1rem;">Nenhum profissional cadastrado nesta instituição</p>';
+                    }
+                    
+                    instituicaoCard.innerHTML = `
+                        <div class="instituicao-nome">${instituicao.nome || 'Instituição sem nome'}</div>
+                        <div style="color: #666; font-size: 0.9rem; margin-bottom: 1rem;">${instituicao.tipo || 'Tipo não informado'}</div>
+                        
+                        <div style="margin-bottom: 1rem;">
+                            <strong>👨‍⚕️ Profissionais:</strong>
+                            ${profissionaisHTML}
+                        </div>
+                        
+                        <div class="instituicao-info">
+                            ${instituicao.endereco ? `<div class="info-item"><i>📍</i> ${instituicao.endereco}</div>` : ''}
+                            ${instituicao.telefone ? `<div class="info-item"><i>📞</i> ${instituicao.telefone}</div>` : ''}
+                            ${instituicao.email ? `<div class="info-item"><i>✉️</i> ${instituicao.email}</div>` : ''}
+                            ${instituicao.site ? `<div class="info-item"><i>🌐</i> <a href="${instituicao.site}" target="_blank">${instituicao.site}</a></div>` : ''}
+                            ${instituicao.especialidades ? `<div class="info-item"><i>🎯</i> ${instituicao.especialidades}</div>` : ''}
+                            ${instituicao.descricao ? `<div class="info-item"><i>📝</i> ${instituicao.descricao}</div>` : ''}
+                        </div>
+                        
+                        ${instituicao.data_cadastro ? `
+                            <div style="margin-top: 1rem; font-size: 0.8rem; color: #888;">
+                                Cadastrada em: ${new Date(instituicao.data_cadastro).toLocaleDateString('pt-BR')}
+                            </div>
+                        ` : ''}
+                    `;
+                    
+                    instituicoesLista.appendChild(instituicaoCard);
+                });
+                
+                console.log("✅ Instituições carregadas com sucesso!");
+                
+            } catch (error) {
+                console.error('❌ Erro ao carregar instituições:', error);
+                instituicoesLista.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                        <h3>❌ Erro ao carregar instituições</h3>
+                        <p>Não foi possível carregar a lista de instituições no momento.</p>
+                        <p>Erro: ${error.message}</p>
+                        <button class="cta-button" onclick="carregarInstituicoes()" style="margin-top: 1rem;">
+                            🔄 Tentar Novamente
+                        </button>
+                    </div>
+                `;
+            }
+        }
 
         // Submit do formulário de login
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            const submitBtn = document.getElementById('loginSubmit');
+            mostrarLoading(submitBtn, 'Entrando...');
             
             const email = document.getElementById('loginEmail').value;
             const senha = document.getElementById('loginSenha').value;
@@ -546,22 +1028,27 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    alert('Login realizado com sucesso!');
+                    alert('✅ Login realizado com sucesso!');
                     loginModal.style.display = 'none';
                     // Redirecionar para o dashboard
                     window.location.href = '/';
                 } else {
-                    alert('Erro: ' + result.error);
+                    alert('❌ Erro: ' + result.error);
+                    removerLoading(submitBtn, 'Entrar');
                 }
             } catch (error) {
-                alert('Erro ao fazer login. Tente novamente.');
+                alert('❌ Erro ao fazer login. Tente novamente.');
                 console.error('Erro:', error);
+                removerLoading(submitBtn, 'Entrar');
             }
         });
 
         // Submit do formulário de cadastro
         cadastroForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            const submitBtn = document.getElementById('cadastroSubmit');
+            mostrarLoading(submitBtn, 'Criando conta...');
             
             const nome = document.getElementById('cadastroNome').value;
             const email = document.getElementById('cadastroEmail').value;
@@ -570,7 +1057,8 @@
             const confirmarSenha = document.getElementById('cadastroConfirmarSenha').value;
 
             if (senha !== confirmarSenha) {
-                alert('As senhas não coincidem!');
+                alert('❌ As senhas não coincidem!');
+                removerLoading(submitBtn, 'Criar Conta');
                 return;
             }
 
@@ -586,16 +1074,18 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    alert('Cadastro realizado com sucesso!');
+                    alert('✅ Cadastro realizado com sucesso!');
                     cadastroModal.style.display = 'none';
                     // Redirecionar para o dashboard
                     window.location.href = '/';
                 } else {
-                    alert('Erro: ' + result.error);
+                    alert('❌ Erro: ' + result.error);
+                    removerLoading(submitBtn, 'Criar Conta');
                 }
             } catch (error) {
-                alert('Erro ao cadastrar. Tente novamente.');
+                alert('❌ Erro ao cadastrar. Tente novamente.');
                 console.error('Erro:', error);
+                removerLoading(submitBtn, 'Criar Conta');
             }
         });
 
@@ -612,6 +1102,17 @@
                 .catch(() => {
                     // Não está logado, continuar na landing page
                 });
+        });
+
+        // Exportar função para ser usada no index.html
+        window.abrirInstituicoes = function() {
+            carregarInstituicoes();
+            visualizarInstituicoesModal.style.display = 'block';
+        };
+
+        // Inicializar tooltips e melhorias de UX
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 NETENDENCIA - Landing Page carregada com sucesso!');
         });
     </script>
 </body>

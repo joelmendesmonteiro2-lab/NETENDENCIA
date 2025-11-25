@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação Geral - NETENDENCIA</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        :root {
+            --primary-1: #0a1e63;
+            --primary-2: #0f3baa;
+            --accent: #2F7CF6;
+            --bg-contrast: #f8f9fa;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary-1) 0%, var(--primary-2) 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--primary-1);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            margin-bottom: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-contrast);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid var(--accent);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-1);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .chart-title {
+            font-size: 1.3rem;
+            color: var(--primary-1);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+        }
+
+        .details-section {
+            background: var(--bg-contrast);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 2rem;
+        }
+
+        .details-title {
+            font-size: 1.3rem;
+            color: var(--primary-1);
+            margin-bottom: 1rem;
+        }
+
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .details-table th,
+        .details-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .details-table th {
+            background: var(--primary-1);
+            color: white;
+            font-weight: 600;
+        }
+
+        .details-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .usuario-logado {
+            background-color: #e3f2fd !important;
+            font-weight: bold;
+            border-left: 4px solid var(--accent);
+        }
+
+        .usuario-logado td:first-child::after {
+            content: " 👤";
+            font-weight: normal;
+        }
+
+        .nivel-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .nivel-nao-dependente {
+            background: #d4edda;
+            color: var(--success);
+        }
+
+        .nivel-moderado {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .nivel-dependente {
+            background: #f8d7da;
+            color: var(--danger);
+        }
+
+        .nivel-nao-avaliado {
+            background: #e9ecef;
+            color: #6c757d;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: var(--danger);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: var(--success);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .refresh-button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+            display: block;
+            margin: 1rem auto;
+        }
+
+        .refresh-button:hover {
+            background: var(--primary-2);
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .info-box p {
+            margin: 0;
+            color: var(--primary-1);
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-card {
+                padding: 1rem;
+            }
+            
+            .chart-wrapper {
+                height: 300px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .details-table {
+                font-size: 0.8rem;
+            }
+            
+            .details-table th,
+            .details-table td {
+                padding: 0.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 1rem;
+            }
+            
+            .stat-card {
+                padding: 1rem;
+            }
+            
+            .stat-number {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <!-- ✅ CORREÇÃO: Link para rota Flask -->
+            <a href="/landing" class="back-button">
+                ← Voltar para página principal
+            </a>
+            <h1>📊 Avaliação Geral</h1>
+            <p>Visão consolidada dos níveis de dependência digital de todos os usuários e familiares</p>
+        </div>
+
+        <div class="content">
+            <!-- Informação sobre a família -->
+            <div class="info-box">
+                <p>📋 Esta página mostra a avaliação geral de <strong>todos os usuários e seus familiares</strong>, incluindo você!</p>
+            </div>
+
+            <!-- Estatísticas Gerais (APENAS 2 QUADROS AGORA) -->
+            <div class="stats-grid" id="statsGrid">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Carregando estatísticas...</p>
+                </div>
+            </div>
+
+            <!-- Gráfico Principal -->
+            <div class="charts-container">
+                <div class="chart-card">
+                    <h3 class="chart-title">Distribuição por Nível de Dependência</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="graficoNiveis"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botão Atualizar -->
+            <button class="refresh-button" onclick="carregarDados()">
+                🔄 Atualizar Dados
+            </button>
+
+            <!-- Detalhes das Avaliações -->
+            <div class="details-section">
+                <h3 class="details-title">Detalhes das Avaliações</h3>
+                <div id="detalhesContainer">
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        <p>Carregando detalhes...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let graficoNiveis = null;
+
+        // Função para carregar dados da API
+        async function carregarDados() {
+            try {
+                mostrarLoading();
+                
+                const response = await fetch('/api/avaliacao-geral/dados');
+                
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    exibirDados(data);
+                } else {
+                    exibirErro(data.error || 'Erro ao carregar dados do banco');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                exibirErro('Erro de conexão com o servidor: ' + error.message);
+            }
+        }
+
+        // Função para exibir dados na página
+        function exibirDados(data) {
+            exibirEstatisticas(data.estatisticas);
+            criarGraficoNiveis(data.dados_grafico.niveis);
+            exibirDetalhes(data.detalhes);
+        }
+
+        // Função para exibir estatísticas (APENAS 2 QUADROS AGORA)
+        function exibirEstatisticas(estatisticas) {
+            const statsGrid = document.getElementById('statsGrid');
+            
+            statsGrid.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${estatisticas.total_avaliados}</div>
+                    <div class="stat-label">Membros Avaliados</div>
+                    <small>Com diagnóstico</small>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${estatisticas.percentual_avaliados}%</div>
+                    <div class="stat-label">Taxa de Avaliação</div>
+                    <small>Da família</small>
+                </div>
+            `;
+        }
+
+        // Função para criar gráfico de níveis
+        function criarGraficoNiveis(dadosNiveis) {
+            const ctx = document.getElementById('graficoNiveis').getContext('2d');
+            
+            // Destruir gráfico anterior se existir
+            if (graficoNiveis) {
+                graficoNiveis.destroy();
+            }
+            
+            graficoNiveis = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: dadosNiveis.map(item => `${item.nivel} (${item.quantidade})`),
+                    datasets: [{
+                        data: dadosNiveis.map(item => item.quantidade),
+                        backgroundColor: dadosNiveis.map(item => item.cor),
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const item = dadosNiveis[context.dataIndex];
+                                    return `${item.nivel}: ${item.quantidade} membro(s) (${item.percentual}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Função para exibir detalhes
+        function exibirDetalhes(detalhes) {
+            const container = document.getElementById('detalhesContainer');
+            
+            if (!detalhes || detalhes.length === 0) {
+                container.innerHTML = `
+                    <div class="error-message">
+                        📝 Nenhuma avaliação encontrada para sua família.
+                        <br>
+                        <small>Realize o diagnóstico para ver os dados aqui.</small>
+                    </div>
+                `;
+                return;
+            }
+            
+            const tabelaHTML = `
+                <table class="details-table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Tipo</th>
+                            <th>Pontuação</th>
+                            <th>Nível</th>
+                            <th>Data da Avaliação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${detalhes.map(detalhe => `
+                            <tr class="${detalhe.is_usuario_logado ? 'usuario-logado' : ''}">
+                                <td>${detalhe.nome || 'N/A'}</td>
+                                <td>${detalhe.categoria || 'N/A'}</td>
+                                <td>${detalhe.pontuacao ? detalhe.pontuacao + ' pts' : 'N/A'}</td>
+                                <td>
+                                    <span class="nivel-badge nivel-${detalhe.nivel ? detalhe.nivel.toLowerCase().replace(/[^a-z0-9]/g, '-').replace('--', '-') : 'nao-avaliado'}">
+                                        ${detalhe.nivel || 'Não avaliado'}
+                                    </span>
+                                </td>
+                                <td>${detalhe.data_diagnostico ? new Date(detalhe.data_diagnostico).toLocaleDateString('pt-BR') : 'N/A'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                <div style="margin-top: 1rem; text-align: center; color: #666;">
+                    <small>👤 Linha destacada em azul representa você</small>
+                </div>
+            `;
+            
+            container.innerHTML = tabelaHTML;
+        }
+
+        // Função para mostrar loading
+        function mostrarLoading() {
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Carregando estatísticas...</p>
+                </div>
+            `;
+            
+            document.getElementById('detalhesContainer').innerHTML = `
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Carregando detalhes...</p>
+                </div>
+            `;
+        }
+
+        // Função para exibir erro
+        function exibirErro(mensagem) {
+            const statsGrid = document.getElementById('statsGrid');
+            const detalhesContainer = document.getElementById('detalhesContainer');
+            
+            statsGrid.innerHTML = `
+                <div class="error-message">
+                    ❌ ${mensagem}
+                </div>
+            `;
+            
+            detalhesContainer.innerHTML = `
+                <div class="error-message">
+                    ❌ ${mensagem}
+                    <br>
+                    <button class="refresh-button" onclick="carregarDados()" style="margin-top: 0.5rem;">
+                        🔄 Tentar Novamente
+                    </button>
+                </div>
+            `;
+        }
+
+        // Carregar dados quando a página carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📊 Página de Avaliação Geral carregada');
+            carregarDados();
+        });
+
+        // Adicionar suporte para tecla F5
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F5') {
+                e.preventDefault();
+                carregarDados();
+            }
+        });
+    </script>
+</body>
+</html>

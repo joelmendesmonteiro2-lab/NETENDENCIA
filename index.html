@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NETeNDENCIA - Controle de Dependência de Internet</title>
+    <title>NETENDENCIA - Controle de Dependência de Internet</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        /* SEU CSS COMPLETO PERMANECE EXATAMENTE O MESMO */
         :root {
             --primary-color: #4a6baf;
             --secondary-color: #f0f4f8;
@@ -18,6 +19,7 @@
             --dependente-color: #ff6b6b;
             --moderado-color: #ffa726;
             --nao-dependente-color: #4caf50;
+            --success-color: #28a745;
         }
         
         * {
@@ -136,6 +138,14 @@
         .btn-accent:hover {
             background-color: #4a6baf;
         }
+
+        .btn-success {
+            background-color: var(--success-color);
+        }
+        
+        .btn-success:hover {
+            background-color: #218838;
+        }
         
         .btn-exit {
             position: absolute;
@@ -243,6 +253,7 @@
         .icon-chart { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%234CAF50"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>'); }
         .icon-exit { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>'); }
         .icon-family { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%234a6baf"><path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A2.01 2.01 0 0018.06 7h-2.12c-.93 0-1.76.53-2.18 1.37L12.5 13.6 11.22 10c-.48-1.06-1.54-1.8-2.72-1.8H4c-1.1 0-2 .9-2 2v6h2v6h4v-6h2v6h4v-6h2v6h4v-6h2v6h4v-6zm-7-7.5V9c0-1.1.9-2 2-2h2c1.1 0 2 .9 2 2v5.5c0 .83-.67 1.5-1.5 1.5h-3c-.83 0-1.5-.67-1.5-1.5z"/></svg>'); }
+        .icon-institution { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2328a745"><path d="M12 7V3L2 9l10 6 10-6-10-6zM2 9l10 6 10-6M2 15l10 6 10-6M2 21l10 6 10-6"/></svg>'); }
         
         /* Novos estilos */
         .user-profile {
@@ -375,6 +386,12 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             position: relative;
         }
+
+        .modal-content-large {
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
         
         .close-modal {
             position: absolute;
@@ -472,22 +489,64 @@
             font-size: 0.9rem;
         }
         
+        /* ESTILOS CORRIGIDOS PARA PLANO DE AÇÃO */
         .action-item {
             display: flex;
             align-items: center;
             margin-bottom: 10px;
-            padding: 10px;
+            padding: 12px;
             background: #f8f9fa;
-            border-radius: 6px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+            transition: all 0.3s ease;
         }
-        
-        .action-item input {
-            margin-right: 10px;
+
+        .action-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
         }
-        
+
         .action-item.completed {
+            background: #d4edda;
+            border-left-color: var(--success-color);
             text-decoration: line-through;
-            opacity: 0.7;
+            opacity: 0.8;
+        }
+
+        .action-item input[type="checkbox"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+
+        .action-item label {
+            flex: 1;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .plano-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+        }
+
+        .plano-stat {
+            text-align: center;
+        }
+
+        .plano-stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .plano-stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
         }
         
         .reflection-question {
@@ -562,6 +621,119 @@
             margin-top: 10px;
             flex-wrap: wrap;
         }
+
+        /* Estilos para o modal de instituições */
+        .instituicoes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .instituicao-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--success-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .instituicao-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .instituicao-nome {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .profissional-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            border-left: 3px solid var(--success-color);
+        }
+
+        .profissional-nome {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .profissao {
+            color: #666;
+            font-style: italic;
+        }
+
+        .instituicao-info {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #ddd;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin: 0.3rem 0;
+            color: #555;
+        }
+
+        .info-item i {
+            margin-right: 0.5rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sem-instituicoes {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+            font-style: italic;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px dashed #ddd;
+            grid-column: 1 / -1;
+        }
+
+        /* Loading e Estados */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
         
         @media (max-width: 768px) {
             .dashboard {
@@ -581,6 +753,11 @@
                 margin: 20px;
                 padding: 20px;
             }
+
+            .modal-content-large {
+                margin: 10px;
+                padding: 15px;
+            }
             
             .family-stats {
                 flex-direction: column;
@@ -594,10 +771,15 @@
             .botoes-membro {
                 flex-direction: column;
             }
+
+            .instituicoes-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- SEU HTML COMPLETO PERMANECE EXATAMENTE O MESMO -->
     <header>
         <h1>NETENDENCIA</h1>
         <p>Controle sua dependência de internet, recupere sua vida</p>
@@ -624,24 +806,29 @@
     
     <div class="divider"></div>
     
+    <!-- DASHBOARD CORRIGIDO: Resumo Familiar dentro da Avaliação Diária -->
     <div class="dashboard">
         <section class="card">
             <h2><span class="icon icon-question"></span>Avaliação Diária</h2>
             <p>Responda ao questionário diário para acompanhar seu progresso e receber feedback personalizado.</p>
             <button class="btn" id="startQuiz">Iniciar Questionário</button>
-        </section>
-        
-        <!-- Resumo Familiar -->
-        <section class="card">
-            <h2><span class="icon icon-family"></span>Resumo Familiar</h2>
-            <div id="familySummary">
-                <!-- Preenchido via JavaScript -->
+            <!-- BOTÃO CORRIGIDO - INSTITUIÇÕES DE APOIO -->
+            <button class="btn btn-success" id="btnInstituicoes" style="margin-top: 10px;">
+                <span class="icon icon-institution"></span>Instituições de Apoio e Profissionais
+            </button>
+            
+            <!-- RESUMO FAMILIAR AGORA DENTRO DA AVALIAÇÃO DIÁRIA -->
+            <div style="margin-top: 30px; padding-top: 25px; border-top: 1px solid var(--border-color);">
+                <h2><span class="icon icon-family"></span>Resumo Familiar</h2>
+                <div id="familySummary">
+                    <!-- Preenchido via JavaScript -->
+                </div>
+                <button class="btn" id="addFamilyMember" style="margin-top: 15px;">+ Adicionar Membro</button>
             </div>
-            <button class="btn" id="addFamilyMember" style="margin-top: 15px;">+ Adicionar Membro</button>
         </section>
     </div>
     
-    <!-- Centro de Recursos -->
+    <!-- CENTRO DE RECURSOS CORRIGIDO: Removido o quadro "Panorama da Família" -->
     <section class="card">
         <h2><span class="icon icon-tips"></span>Centro de Recursos</h2>
         <div class="resources-grid">
@@ -650,19 +837,17 @@
                 <p>Sugestões para melhorar seu bem-estar digital baseadas no seu último diagnóstico</p>
             </div>
             
-            <div class="resource-card" onclick="abrirPanoramaFamilia()">
-                <h4>👨‍👩‍👧‍👦 Panorama da Família</h4>
-                <p>Veja a média das pontuações e distribuição dos níveis na sua família</p>
-            </div>
-            
-            <div class="resource-card" onclick="abrirAutoavaliacao()">
-                <h4>📝 Autoavaliação e Reflexão</h4>
-                <p>Reflita sobre seu uso digital e como você se sente em relação a ele</p>
-            </div>
-            
             <div class="resource-card" onclick="abrirPlanoAcao()">
                 <h4>✅ Plano de Ação Pessoal</h4>
                 <p>Crie e acompanhe seu plano personalizado para melhorar seu bem-estar digital</p>
+            </div>
+            
+            <!-- REMOVIDO: Quadro Panorama da Família -->
+            
+            <!-- AUTOAVALIAÇÃO AGORA AQUI, NO LUGAR DO PANORAMA DA FAMÍLIA -->
+            <div class="resource-card" onclick="abrirAutoavaliacao()">
+                <h4>📝 Autoavaliação e Reflexão</h4>
+                <p>Reflita sobre seu uso digital e como você se sente em relação a ele</p>
             </div>
         </div>
     </section>
@@ -757,6 +942,19 @@
         </div>
     </div>
 
+    <!-- MODAL CORRIGIDO: Instituições de Apoio -->
+    <div id="instituicoesModal" class="modal">
+        <div class="modal-content modal-content-large">
+            <span class="close-modal" id="closeInstituicoesModal">&times;</span>
+            <h2><span class="icon icon-institution"></span>Instituições de Apoio e Profissionais</h2>
+            <p>Encontre instituições e profissionais especializados em saúde mental e dependência digital:</p>
+            <div id="instituicoesAlert"></div>
+            <div id="instituicoesLista" class="instituicoes-grid">
+                <!-- As instituições serão carregadas aqui dinamicamente -->
+            </div>
+        </div>
+    </div>
+
     <script>
         // Variáveis globais
         let respostasAtuais = {};
@@ -764,17 +962,23 @@
         let currentResource = '';
         let currentMembroId = null;
         let currentMembroNome = '';
+        let perguntasCarregadas = [];
 
         document.addEventListener('DOMContentLoaded', function() {
             // Carregar dados iniciais
             carregarDadosIniciais();
             
-            // Botão de questionário
+            // Botão de questionário - CORRIGIDO
             document.getElementById('startQuiz').addEventListener('click', function() {
                 abrirQuestionario();
             });
             
-            // Botão de adicionar membro da família
+            // BOTÃO CORRIGIDO: Instituições de Apoio
+            document.getElementById('btnInstituicoes').addEventListener('click', function() {
+                abrirInstituicoes();
+            });
+            
+            // Botão de adicionar membro da família - AGORA DENTRO DO CARD DE AVALIAÇÃO
             document.getElementById('addFamilyMember').addEventListener('click', function() {
                 document.getElementById('familyModal').style.display = 'block';
             });
@@ -803,12 +1007,17 @@
                 document.getElementById('resourcesModal').style.display = 'none';
             });
             
-            // Enviar questionário
+            // MODAL CORRIGIDO: Fechar modal de instituições
+            document.getElementById('closeInstituicoesModal').addEventListener('click', function() {
+                document.getElementById('instituicoesModal').style.display = 'none';
+            });
+            
+            // Enviar questionário - CORRIGIDO
             document.getElementById('submitQuiz').addEventListener('click', function() {
                 enviarQuestionario();
             });
 
-            // Enviar questionário familiar
+            // Enviar questionário familiar - CORRIGIDO
             document.getElementById('submitFamilyQuiz').addEventListener('click', function() {
                 enviarQuestionarioFamiliar();
             });
@@ -816,7 +1025,7 @@
 
         // Fechar modais ao clicar fora
         window.addEventListener('click', function(event) {
-            const modals = ['quizModal', 'familyQuizModal', 'familyModal', 'resourcesModal'];
+            const modals = ['quizModal', 'familyQuizModal', 'familyModal', 'resourcesModal', 'instituicoesModal'];
             modals.forEach(modalId => {
                 const modal = document.getElementById(modalId);
                 if (event.target === modal) {
@@ -824,6 +1033,1067 @@
                 }
             });
         });
+
+        // ========== FUNÇÕES DO SISTEMA DE QUESTIONÁRIO ==========
+
+        // FUNÇÃO CORRIGIDA: Abrir questionário
+        async function abrirQuestionario() {
+            console.log('📝 Abrindo questionário...');
+            
+            try {
+                const response = await fetch('/api/perguntas');
+                if (!response.ok) {
+                    throw new Error('Erro ao carregar perguntas');
+                }
+                
+                perguntasCarregadas = await response.json();
+                console.log('📋 Perguntas carregadas:', perguntasCarregadas);
+                
+                const quizQuestions = document.getElementById('quizQuestions');
+                quizQuestions.innerHTML = '';
+                respostasAtuais = {};
+                
+                // Renderizar perguntas
+                perguntasCarregadas.forEach((pergunta, index) => {
+                    const perguntaDiv = document.createElement('div');
+                    perguntaDiv.className = 'pergunta';
+                    perguntaDiv.innerHTML = `
+                        <div class="pergunta-texto">${index + 1}. ${pergunta.texto}</div>
+                        <div class="opcoes-resposta" id="opcoes-${pergunta.id}">
+                            ${pergunta.opcoes.map(opcao => `
+                                <div class="opcao" data-pergunta="${pergunta.id}" data-opcao="${opcao.id}" data-pontuacao="${opcao.pontuacao}">
+                                    ${opcao.texto}
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    quizQuestions.appendChild(perguntaDiv);
+                });
+                
+                // Adicionar eventos às opções
+                document.querySelectorAll('.opcao').forEach(opcao => {
+                    opcao.addEventListener('click', function() {
+                        const perguntaId = this.getAttribute('data-pergunta');
+                        const opcaoId = this.getAttribute('data-opcao');
+                        const pontuacao = parseInt(this.getAttribute('data-pontuacao'));
+                        
+                        // Remover seleção anterior da mesma pergunta
+                        document.querySelectorAll(`.opcao[data-pergunta="${perguntaId}"]`).forEach(op => {
+                            op.classList.remove('selecionada');
+                        });
+                        
+                        // Selecionar nova opção
+                        this.classList.add('selecionada');
+                        
+                        // Salvar resposta
+                        respostasAtuais[perguntaId] = {
+                            pergunta_id: perguntaId,
+                            opcao_id: opcaoId,
+                            pontuacao: pontuacao,
+                            texto: this.textContent.trim()
+                        };
+                        
+                        // Verificar se todas as perguntas foram respondidas
+                        verificarRespostasCompletas();
+                    });
+                });
+                
+                document.getElementById('submitQuiz').style.display = 'none';
+                document.getElementById('quizResult').style.display = 'none';
+                document.getElementById('quizModal').style.display = 'block';
+                
+            } catch (error) {
+                console.error('❌ Erro ao carregar questionário:', error);
+                alert('Erro ao carregar o questionário. Tente novamente.');
+            }
+        }
+
+        // FUNÇÃO CORRIGIDA: Verificar se todas as respostas foram preenchidas
+        function verificarRespostasCompletas() {
+            const todasRespondidas = perguntasCarregadas.every(pergunta => 
+                respostasAtuais[pergunta.id] !== undefined
+            );
+            
+            document.getElementById('submitQuiz').style.display = todasRespondidas ? 'block' : 'none';
+        }
+
+        // FUNÇÃO CORRIGIDA: Enviar questionário
+        async function enviarQuestionario() {
+            console.log('📤 Enviando questionário...');
+            
+            const respostasArray = Object.values(respostasAtuais);
+            
+            try {
+                const response = await fetch('/api/diagnostico', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        respostas: respostasArray
+                    })
+                });
+
+                const result = await response.json();
+                console.log('📊 Resultado recebido:', result);
+
+                if (result.success) {
+                    mostrarResultadoQuestionario(result);
+                } else {
+                    alert('Erro: ' + result.error);
+                }
+            } catch (error) {
+                console.error('❌ Erro ao enviar questionário:', error);
+                alert('Erro ao enviar questionário. Tente novamente.');
+            }
+        }
+
+        // FUNÇÃO CORRIGIDA: Mostrar resultado do questionário
+        function mostrarResultadoQuestionario(result) {
+            const quizResult = document.getElementById('quizResult');
+            const nivelClass = result.diagnostico.nivel.toLowerCase().replace(' ', '-');
+            
+            quizResult.innerHTML = `
+                <div style="text-align: center; padding: 20px;">
+                    <h3>📊 Seu Resultado</h3>
+                    <div style="font-size: 1.5rem; font-weight: bold; margin: 10px 0;">
+                        Pontuação: ${result.diagnostico.pontuacao}/30
+                    </div>
+                    <div class="nivel ${nivelClass}" style="font-size: 1.2rem; margin: 10px 0;">
+                        ${result.diagnostico.nivel}
+                    </div>
+                    <div class="solucoes-list">
+                        <h4>💡 Sugestões para você:</h4>
+                        ${result.solucoes.map(solucao => `
+                            <div class="solucao-item">${solucao}</div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            quizResult.style.display = 'block';
+            document.getElementById('submitQuiz').style.display = 'none';
+            
+            // Recarregar dados do dashboard após 3 segundos
+            setTimeout(() => {
+                carregarDadosIniciais();
+            }, 3000);
+        }
+
+        // ========== FUNÇÕES DO SISTEMA FAMILIAR ==========
+
+        // FUNÇÃO CORRIGIDA: Adicionar membro da família
+        async function adicionarMembroFamilia() {
+            const nome = document.getElementById('memberName').value;
+            const idade = document.getElementById('memberAge').value;
+            const relacionamento = document.getElementById('memberRelationship').value;
+            
+            if (!nome || !idade || !relacionamento) {
+                alert('Por favor, preencha todos os campos.');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/familia/membros', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        nome: nome,
+                        idade: parseInt(idade),
+                        relacionamento: relacionamento
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('Membro adicionado com sucesso!');
+                    document.getElementById('familyModal').style.display = 'none';
+                    document.getElementById('familyForm').reset();
+                    carregarDadosIniciais(); // Recarregar dados
+                } else {
+                    alert('Erro: ' + result.error);
+                }
+            } catch (error) {
+                console.error('❌ Erro ao adicionar membro:', error);
+                alert('Erro ao adicionar membro. Tente novamente.');
+            }
+        }
+
+        // FUNÇÃO CORRIGIDA: Excluir membro da família
+        async function excluirMembroFamilia(membroId) {
+            if (!confirm('Tem certeza que deseja excluir este membro da família?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/familia/membros/${membroId}`, {
+                    method: 'DELETE'
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('Membro excluído com sucesso!');
+                    carregarDadosIniciais(); // Recarregar dados
+                } else {
+                    alert('Erro: ' + result.error);
+                }
+            } catch (error) {
+                console.error('❌ Erro ao excluir membro:', error);
+                alert('Erro ao excluir membro. Tente novamente.');
+            }
+        }
+
+        // FUNÇÃO CORRIGIDA: Abrir questionário para membro da família
+        async function abrirQuestionarioFamiliar(membroId, membroNome) {
+            currentMembroId = membroId;
+            currentMembroNome = membroNome;
+            
+            console.log(`📝 Abrindo questionário para ${membroNome} (ID: ${membroId})`);
+            
+            try {
+                const response = await fetch('/api/perguntas');
+                if (!response.ok) {
+                    throw new Error('Erro ao carregar perguntas');
+                }
+                
+                perguntasCarregadas = await response.json();
+                console.log('📋 Perguntas carregadas:', perguntasCarregadas);
+                
+                const familyQuizQuestions = document.getElementById('familyQuizQuestions');
+                familyQuizQuestions.innerHTML = '';
+                respostasAtuais = {};
+                
+                // Atualizar título
+                document.getElementById('familyQuizTitle').textContent = `Questionário para ${membroNome}`;
+                document.getElementById('familyQuizDescription').textContent = `Responda o questionário em nome de ${membroNome}.`;
+                
+                // Renderizar perguntas
+                perguntasCarregadas.forEach((pergunta, index) => {
+                    const perguntaDiv = document.createElement('div');
+                    perguntaDiv.className = 'pergunta';
+                    perguntaDiv.innerHTML = `
+                        <div class="pergunta-texto">${index + 1}. ${pergunta.texto}</div>
+                        <div class="opcoes-resposta" id="family-opcoes-${pergunta.id}">
+                            ${pergunta.opcoes.map(opcao => `
+                                <div class="opcao" data-pergunta="${pergunta.id}" data-opcao="${opcao.id}" data-pontuacao="${opcao.pontuacao}">
+                                    ${opcao.texto}
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    familyQuizQuestions.appendChild(perguntaDiv);
+                });
+                
+                // Adicionar eventos às opções
+                document.querySelectorAll('#familyQuizQuestions .opcao').forEach(opcao => {
+                    opcao.addEventListener('click', function() {
+                        const perguntaId = this.getAttribute('data-pergunta');
+                        const opcaoId = this.getAttribute('data-opcao');
+                        const pontuacao = parseInt(this.getAttribute('data-pontuacao'));
+                        
+                        // Remover seleção anterior da mesma pergunta
+                        document.querySelectorAll(`#familyQuizQuestions .opcao[data-pergunta="${perguntaId}"]`).forEach(op => {
+                            op.classList.remove('selecionada');
+                        });
+                        
+                        // Selecionar nova opção
+                        this.classList.add('selecionada');
+                        
+                        // Salvar resposta
+                        respostasAtuais[perguntaId] = {
+                            pergunta_id: perguntaId,
+                            opcao_id: opcaoId,
+                            pontuacao: pontuacao,
+                            texto: this.textContent.trim()
+                        };
+                        
+                        // Verificar se todas as perguntas foram respondidas
+                        verificarRespostasFamiliaCompletas();
+                    });
+                });
+                
+                document.getElementById('submitFamilyQuiz').style.display = 'none';
+                document.getElementById('familyQuizResult').style.display = 'none';
+                document.getElementById('familyQuizModal').style.display = 'block';
+                
+            } catch (error) {
+                console.error('❌ Erro ao carregar questionário familiar:', error);
+                alert('Erro ao carregar o questionário. Tente novamente.');
+            }
+        }
+
+        // FUNÇÃO CORRIGIDA: Verificar respostas do questionário familiar
+        function verificarRespostasFamiliaCompletas() {
+            const todasRespondidas = perguntasCarregadas.every(pergunta => 
+                respostasAtuais[pergunta.id] !== undefined
+            );
+            
+            document.getElementById('submitFamilyQuiz').style.display = todasRespondidas ? 'block' : 'none';
+        }
+
+        // FUNÇÃO CORRIGIDA: Enviar questionário familiar
+        async function enviarQuestionarioFamiliar() {
+            console.log('📤 Enviando questionário familiar...');
+            
+            const respostasArray = Object.values(respostasAtuais);
+            
+            try {
+                const response = await fetch(`/api/familia/membros/${currentMembroId}/diagnostico`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        respostas: respostasArray
+                    })
+                });
+
+                const result = await response.json();
+                console.log('📊 Resultado familiar recebido:', result);
+
+                if (result.success) {
+                    mostrarResultadoQuestionarioFamiliar(result);
+                } else {
+                    alert('Erro: ' + result.error);
+                }
+            } catch (error) {
+                console.error('❌ Erro ao enviar questionário familiar:', error);
+                alert('Erro ao enviar questionário. Tente novamente.');
+            }
+        }
+
+        // FUNÇÃO CORRIGIDA: Mostrar resultado do questionário familiar
+        function mostrarResultadoQuestionarioFamiliar(result) {
+            const familyQuizResult = document.getElementById('familyQuizResult');
+            const nivelClass = result.diagnostico.nivel.toLowerCase().replace(' ', '-');
+            
+            familyQuizResult.innerHTML = `
+                <div style="text-align: center; padding: 20px;">
+                    <h3>📊 Resultado para ${currentMembroNome}</h3>
+                    <div style="font-size: 1.5rem; font-weight: bold; margin: 10px 0;">
+                        Pontuação: ${result.diagnostico.pontuacao}/30
+                    </div>
+                    <div class="nivel ${nivelClass}" style="font-size: 1.2rem; margin: 10px 0;">
+                        ${result.diagnostico.nivel}
+                    </div>
+                    <div class="solucoes-list">
+                        <h4>💡 Sugestões para ${currentMembroNome}:</h4>
+                        ${result.solucoes.map(solucao => `
+                            <div class="solucao-item">${solucao}</div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            familyQuizResult.style.display = 'block';
+            document.getElementById('submitFamilyQuiz').style.display = 'none';
+            
+            // Recarregar dados do dashboard após 3 segundos
+            setTimeout(() => {
+                carregarDadosIniciais();
+            }, 3000);
+        }
+
+        // ========== FUNÇÕES DO CENTRO DE RECURSOS ==========
+
+        // FUNÇÃO CORRIGIDA: Dicas Personalizadas
+        async function abrirDicasPersonalizadas() {
+            currentResource = 'dicas';
+            try {
+                const response = await fetch('/api/dashboard-data');
+                const data = await response.json();
+                
+                let dicasHTML = `<h3>💡 Dicas Personalizadas</h3>`;
+                
+                if (data.success && data.ultimo_diagnostico) {
+                    const nivel = data.ultimo_diagnostico.nivel;
+                    // CORREÇÃO: Usar encodeURIComponent para garantir que o nível seja passado corretamente
+                    const solucoesResponse = await fetch(`/api/solucoes/${encodeURIComponent(nivel)}`);
+                    const solucoesData = await solucoesResponse.json();
+                    
+                    if (solucoesData.success) {
+                        dicasHTML += `
+                            <p>Baseado no seu último diagnóstico (<strong>${nivel}</strong>), aqui estão algumas dicas personalizadas:</p>
+                            <div class="solucoes-list">
+                                ${solucoesData.solucoes.map(solucao => `
+                                    <div class="solucao-item">${solucao}</div>
+                                `).join('')}
+                            </div>
+                        `;
+                    } else {
+                        dicasHTML += `<p>Erro ao carregar soluções personalizadas.</p>`;
+                    }
+                } else {
+                    dicasHTML += `
+                        <p>Você ainda não realizou nenhum diagnóstico. Complete o questionário para receber dicas personalizadas.</p>
+                        <button class="btn" onclick="abrirQuestionario()">Fazer Questionário</button>
+                    `;
+                }
+                
+                document.getElementById('resourcesContent').innerHTML = dicasHTML;
+                document.getElementById('resourcesModal').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Erro ao carregar dicas:', error);
+                document.getElementById('resourcesContent').innerHTML = `
+                    <h3>💡 Dicas Personalizadas</h3>
+                    <p>Erro ao carregar dicas personalizadas. Tente novamente.</p>
+                `;
+                document.getElementById('resourcesModal').style.display = 'block';
+            }
+        }
+
+        // FUNÇÃO REMOVIDA: Panorama da Família - não é mais necessário
+
+        // FUNÇÃO CORRIGIDA: Autoavaliação e Reflexão
+        async function abrirAutoavaliacao() {
+            currentResource = 'autoavaliacao';
+            
+            // Carregar reflexões salvas
+            let reflexao1 = '', reflexao2 = '', reflexao3 = '';
+            
+            try {
+                const response = await fetch('/api/reflexoes');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.reflexoes) {
+                        reflexao1 = data.reflexoes["Como você se sente sobre o tempo que passa online atualmente?"]?.resposta || '';
+                        reflexao2 = data.reflexoes["Quais atividades offline você gostaria de fazer mais?"]?.resposta || '';
+                        reflexao3 = data.reflexoes["Que mudanças você gostaria de implementar no seu uso de tecnologia?"]?.resposta || '';
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao carregar reflexões:', error);
+            }
+            
+            const autoavaliacaoHTML = `
+                <h3>📝 Autoavaliação e Reflexão</h3>
+                <p>Reflita sobre seu uso digital respondendo às seguintes perguntas:</p>
+                
+                <form id="reflexoesForm">
+                    <div class="reflection-question">
+                        <label>1. Como você se sente sobre o tempo que passa online atualmente?</label>
+                        <textarea id="reflexao1" placeholder="Descreva seus sentimentos...">${reflexao1}</textarea>
+                    </div>
+                    
+                    <div class="reflection-question">
+                        <label>2. Quais atividades offline você gostaria de fazer mais?</label>
+                        <textarea id="reflexao2" placeholder="Liste atividades que você gostaria de retomar...">${reflexao2}</textarea>
+                    </div>
+                    
+                    <div class="reflection-question">
+                        <label>3. Que mudanças você gostaria de implementar no seu uso de tecnologia?</label>
+                        <textarea id="reflexao3" placeholder="Descreva suas metas...">${reflexao3}</textarea>
+                    </div>
+                    
+                    <button type="button" class="btn" onclick="salvarReflexoes()">Salvar Reflexões</button>
+                </form>
+            `;
+            
+            document.getElementById('resourcesContent').innerHTML = autoavaliacaoHTML;
+            document.getElementById('resourcesModal').style.display = 'block';
+        }
+
+        // FUNÇÃO CORRIGIDA: Salvar Reflexões
+        async function salvarReflexoes() {
+            try {
+                const reflexoes = {
+                    "Como você se sente sobre o tempo que passa online atualmente?": document.getElementById('reflexao1').value,
+                    "Quais atividades offline você gostaria de fazer mais?": document.getElementById('reflexao2').value,
+                    "Que mudanças você gostaria de implementar no seu uso de tecnologia?": document.getElementById('reflexao3').value
+                };
+                
+                const response = await fetch('/api/reflexoes', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        reflexoes: reflexoes
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('Reflexões salvas com sucesso!');
+                    document.getElementById('resourcesModal').style.display = 'none';
+                } else {
+                    alert('Erro: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Erro ao salvar reflexões:', error);
+                alert('Erro ao salvar reflexões. Tente novamente.');
+            }
+        }
+
+        // FUNÇÃO CORRIGIDA: Plano de Ação Pessoal com persistência
+        async function abrirPlanoAcao() {
+            currentResource = 'planoacao';
+            
+            try {
+                // Tentar carregar plano salvo da API
+                const response = await fetch('/api/plano-acao');
+                let planoSalvo = { metas: [], metasPersonalizadas: [] };
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.plano_acao) {
+                        planoSalvo = data.plano_acao;
+                        console.log('📋 Plano carregado da API:', planoSalvo);
+                    }
+                } else {
+                    // Fallback: carregar do localStorage
+                    planoSalvo = carregarPlanoLocal();
+                }
+                
+                const planoAcaoHTML = `
+                    <h3>✅ Plano de Ação Pessoal</h3>
+                    <p>Crie seu plano personalizado para melhorar seu bem-estar digital:</p>
+                    
+                    <!-- Estatísticas do Plano -->
+                    <div class="plano-stats" id="planoStats">
+                        <div class="plano-stat">
+                            <span class="plano-stat-value" id="totalMetas">0</span>
+                            <span class="plano-stat-label">Total de Metas</span>
+                        </div>
+                        <div class="plano-stat">
+                            <span class="plano-stat-value" id="metasConcluidas">0</span>
+                            <span class="plano-stat-label">Concluídas</span>
+                        </div>
+                        <div class="plano-stat">
+                            <span class="plano-stat-value" id="progressoPercentual">0%</span>
+                            <span class="plano-stat-label">Progresso</span>
+                        </div>
+                    </div>
+                    
+                    <div id="listaMetas">
+                        <!-- Metas serão carregadas aqui -->
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h4>➕ Adicionar Meta Personalizada</h4>
+                        <input type="text" id="novaMeta" placeholder="Digite sua meta personalizada..." style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px;">
+                        <button class="btn" onclick="adicionarMetaPersonalizada()">Adicionar Meta</button>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <button class="btn btn-success" onclick="salvarPlanoAcao()">💾 Salvar Plano</button>
+                        <button class="btn" onclick="limparPlanoAcao()" style="margin-left: 10px;">🗑️ Limpar Tudo</button>
+                    </div>
+                `;
+                
+                document.getElementById('resourcesContent').innerHTML = planoAcaoHTML;
+                
+                // Carregar metas iniciais
+                carregarMetasIniciais(planoSalvo);
+                document.getElementById('resourcesModal').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Erro ao carregar plano:', error);
+                // Fallback para HTML básico se a API falhar
+                carregarPlanoBasico();
+            }
+        }
+
+        // Carregar metas iniciais
+        function carregarMetasIniciais(planoSalvo) {
+            const metasPadrao = [
+                { id: 'acao1', texto: 'Estabelecer horários específicos para verificar redes sociais' },
+                { id: 'acao2', texto: 'Criar zonas livres de dispositivos em casa' },
+                { id: 'acao3', texto: 'Praticar a técnica Pomodoro (25min foco, 5min pausa)' },
+                { id: 'acao4', texto: 'Desativar notificações não essenciais' },
+                { id: 'acao5', texto: 'Estabelecer uma rotina de exercícios físicos' },
+                { id: 'acao6', texto: 'Dedicar tempo para hobbies offline' }
+            ];
+            
+            let html = '';
+            
+            // Metas padrão
+            metasPadrao.forEach(meta => {
+                const estaConcluida = planoSalvo.metas?.find(m => m.id === meta.id)?.concluida || false;
+                html += `
+                    <div class="action-item ${estaConcluida ? 'completed' : ''}">
+                        <input type="checkbox" id="${meta.id}" ${estaConcluida ? 'checked' : ''} onchange="marcarMeta('${meta.id}', this.checked)">
+                        <label for="${meta.id}">${meta.texto}</label>
+                    </div>
+                `;
+            });
+            
+            // Metas personalizadas
+            if (planoSalvo.metasPersonalizadas && planoSalvo.metasPersonalizadas.length > 0) {
+                planoSalvo.metasPersonalizadas.forEach(meta => {
+                    html += `
+                        <div class="action-item ${meta.concluida ? 'completed' : ''}">
+                            <input type="checkbox" id="${meta.id}" ${meta.concluida ? 'checked' : ''} onchange="marcarMeta('${meta.id}', this.checked)">
+                            <label for="${meta.id}">${meta.texto}</label>
+                            <button class="btn-excluir" onclick="removerMetaPersonalizada('${meta.id}')" style="margin-left: auto;">🗑️</button>
+                        </div>
+                    `;
+                });
+            }
+            
+            document.getElementById('listaMetas').innerHTML = html;
+            atualizarEstatisticasPlano();
+        }
+
+        // Fallback se a API não estiver disponível
+        function carregarPlanoBasico() {
+            const planoAcaoHTML = `
+                <h3>✅ Plano de Ação Pessoal</h3>
+                <p>Crie seu plano personalizado para melhorar seu bem-estar digital:</p>
+                
+                <div class="plano-stats" id="planoStats">
+                    <div class="plano-stat">
+                        <span class="plano-stat-value" id="totalMetas">0</span>
+                        <span class="plano-stat-label">Total de Metas</span>
+                    </div>
+                    <div class="plano-stat">
+                        <span class="plano-stat-value" id="metasConcluidas">0</span>
+                        <span class="plano-stat-label">Concluídas</span>
+                    </div>
+                    <div class="plano-stat">
+                        <span class="plano-stat-value" id="progressoPercentual">0%</span>
+                        <span class="plano-stat-label">Progresso</span>
+                    </div>
+                </div>
+                
+                <div id="listaMetas">
+                    <div class="action-item">
+                        <input type="checkbox" id="acao1" onchange="marcarMeta('acao1', this.checked)">
+                        <label for="acao1">Estabelecer horários específicos para verificar redes sociais</label>
+                    </div>
+                    
+                    <div class="action-item">
+                        <input type="checkbox" id="acao2" onchange="marcarMeta('acao2', this.checked)">
+                        <label for="acao2">Criar zonas livres de dispositivos em casa</label>
+                    </div>
+                    
+                    <div class="action-item">
+                        <input type="checkbox" id="acao3" onchange="marcarMeta('acao3', this.checked)">
+                        <label for="acao3">Praticar a técnica Pomodoro (25min foco, 5min pausa)</label>
+                    </div>
+                    
+                    <div class="action-item">
+                        <input type="checkbox" id="acao4" onchange="marcarMeta('acao4', this.checked)">
+                        <label for="acao4">Desativar notificações não essenciais</label>
+                    </div>
+                    
+                    <div class="action-item">
+                        <input type="checkbox" id="acao5" onchange="marcarMeta('acao5', this.checked)">
+                        <label for="acao5">Estabelecer uma rotina de exercícios físicos</label>
+                    </div>
+                    
+                    <div class="action-item">
+                        <input type="checkbox" id="acao6" onchange="marcarMeta('acao6', this.checked)">
+                        <label for="acao6">Dedicar tempo para hobbies offline</label>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <h4>➕ Adicionar Meta Personalizada</h4>
+                    <input type="text" id="novaMeta" placeholder="Digite sua meta personalizada..." style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px;">
+                    <button class="btn" onclick="adicionarMetaPersonalizada()">Adicionar Meta</button>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <button class="btn btn-success" onclick="salvarPlanoLocal()">💾 Salvar Localmente</button>
+                    <button class="btn" onclick="limparPlanoAcao()" style="margin-left: 10px;">🗑️ Limpar Tudo</button>
+                </div>
+            `;
+            
+            document.getElementById('resourcesContent').innerHTML = planoAcaoHTML;
+            atualizarEstatisticasPlano();
+        }
+
+        // FUNÇÃO CORRIGIDA: Adicionar meta personalizada
+        function adicionarMetaPersonalizada() {
+            const novaMetaTexto = document.getElementById('novaMeta').value.trim();
+            if (!novaMetaTexto) {
+                alert('Por favor, digite uma meta.');
+                return;
+            }
+            
+            const metaId = 'meta-' + Date.now();
+            const novaMetaHTML = `
+                <div class="action-item">
+                    <input type="checkbox" id="${metaId}" onchange="marcarMeta('${metaId}', this.checked)">
+                    <label for="${metaId}">${novaMetaTexto}</label>
+                    <button class="btn-excluir" onclick="removerMetaPersonalizada('${metaId}')" style="margin-left: auto;">🗑️</button>
+                </div>
+            `;
+            
+            document.getElementById('listaMetas').insertAdjacentHTML('beforeend', novaMetaHTML);
+            document.getElementById('novaMeta').value = '';
+            
+            // Atualizar estatísticas e salvar
+            atualizarEstatisticasPlano();
+            salvarPlanoAcao();
+        }
+
+        // Marcar/desmarcar meta
+        function marcarMeta(metaId, concluida) {
+            const actionItem = document.querySelector(`#${metaId}`).closest('.action-item');
+            if (concluida) {
+                actionItem.classList.add('completed');
+            } else {
+                actionItem.classList.remove('completed');
+            }
+            
+            // Atualizar estatísticas e salvar
+            atualizarEstatisticasPlano();
+            salvarPlanoAcao();
+        }
+
+        // Remover meta personalizada
+        function removerMetaPersonalizada(metaId) {
+            if (!confirm('Tem certeza que deseja remover esta meta?')) {
+                return;
+            }
+            
+            const actionItem = document.querySelector(`#${metaId}`).closest('.action-item');
+            actionItem.remove();
+            
+            // Atualizar estatísticas e salvar
+            atualizarEstatisticasPlano();
+            salvarPlanoAcao();
+        }
+
+        // Atualizar estatísticas do plano
+        function atualizarEstatisticasPlano() {
+            const totalMetas = document.querySelectorAll('.action-item').length;
+            const metasConcluidas = document.querySelectorAll('.action-item.completed').length;
+            const progressoPercentual = totalMetas > 0 ? Math.round((metasConcluidas / totalMetas) * 100) : 0;
+            
+            if (document.getElementById('totalMetas')) {
+                document.getElementById('totalMetas').textContent = totalMetas;
+                document.getElementById('metasConcluidas').textContent = metasConcluidas;
+                document.getElementById('progressoPercentual').textContent = progressoPercentual + '%';
+            }
+        }
+
+        // FUNÇÃO CORRIGIDA: Salvar plano de ação
+        async function salvarPlanoAcao() {
+            try {
+                const metas = [];
+                const metasPersonalizadas = [];
+                
+                // Coletar todas as metas
+                document.querySelectorAll('.action-item').forEach(item => {
+                    const checkbox = item.querySelector('input[type="checkbox"]');
+                    const label = item.querySelector('label');
+                    const meta = {
+                        id: checkbox.id,
+                        texto: label.textContent,
+                        concluida: checkbox.checked
+                    };
+                    
+                    if (checkbox.id.startsWith('meta-')) {
+                        metasPersonalizadas.push(meta);
+                    } else {
+                        metas.push(meta);
+                    }
+                });
+                
+                const planoData = {
+                    metas: metas,
+                    metasPersonalizadas: metasPersonalizadas,
+                    dataAtualizacao: new Date().toISOString()
+                };
+                
+                console.log('💾 Salvando plano na API:', planoData);
+                
+                // CORREÇÃO: Enviar com o nome correto do campo (plano_acao)
+                const response = await fetch('/api/plano-acao', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        plano_acao: planoData
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    mostrarFeedbackSucesso('Plano salvo com sucesso!');
+                } else {
+                    throw new Error(result.error);
+                }
+                
+            } catch (error) {
+                console.error('Erro ao salvar plano:', error);
+                mostrarFeedbackErro('Erro ao salvar plano: ' + error.message);
+            }
+        }
+
+        // Salvar localmente no localStorage (fallback)
+        function salvarPlanoLocal() {
+            try {
+                const metas = [];
+                const metasPersonalizadas = [];
+                
+                document.querySelectorAll('.action-item').forEach(item => {
+                    const checkbox = item.querySelector('input[type="checkbox"]');
+                    const label = item.querySelector('label');
+                    const meta = {
+                        id: checkbox.id,
+                        texto: label.textContent,
+                        concluida: checkbox.checked
+                    };
+                    
+                    if (checkbox.id.startsWith('meta-')) {
+                        metasPersonalizadas.push(meta);
+                    } else {
+                        metas.push(meta);
+                    }
+                });
+                
+                const planoData = {
+                    metas: metas,
+                    metasPersonalizadas: metasPersonalizadas,
+                    dataAtualizacao: new Date().toISOString()
+                };
+                
+                localStorage.setItem('planoAcaoPessoal', JSON.stringify(planoData));
+                mostrarFeedbackSucesso('Plano salvo localmente!');
+            } catch (error) {
+                console.error('Erro ao salvar localmente:', error);
+                alert('Erro ao salvar o plano.');
+            }
+        }
+
+        // Carregar plano do localStorage (fallback)
+        function carregarPlanoLocal() {
+            try {
+                const planoSalvo = localStorage.getItem('planoAcaoPessoal');
+                return planoSalvo ? JSON.parse(planoSalvo) : { metas: [], metasPersonalizadas: [] };
+            } catch (error) {
+                console.error('Erro ao carregar plano local:', error);
+                return { metas: [], metasPersonalizadas: [] };
+            }
+        }
+
+        // Limpar plano de ação
+        function limparPlanoAcao() {
+            if (!confirm('Tem certeza que deseja limpar todo o plano de ação? Esta ação não pode ser desfeita.')) {
+                return;
+            }
+            
+            // Limpar localStorage
+            localStorage.removeItem('planoAcaoPessoal');
+            
+            // Recarregar o plano vazio
+            carregarPlanoBasico();
+            
+            mostrarFeedbackSucesso('Plano limpo com sucesso!');
+        }
+
+        // Mostrar feedback visual
+        function mostrarFeedbackSucesso(mensagem) {
+            // Criar ou atualizar elemento de feedback
+            let feedbackEl = document.getElementById('planoFeedback');
+            if (!feedbackEl) {
+                feedbackEl = document.createElement('div');
+                feedbackEl.id = 'planoFeedback';
+                feedbackEl.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #4CAF50;
+                    color: white;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    z-index: 10000;
+                    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                `;
+                document.body.appendChild(feedbackEl);
+            }
+            
+            feedbackEl.textContent = mensagem;
+            feedbackEl.style.display = 'block';
+            
+            setTimeout(() => {
+                feedbackEl.style.display = 'none';
+            }, 3000);
+        }
+
+        // NOVA FUNÇÃO: Mostrar feedback de erro
+        function mostrarFeedbackErro(mensagem) {
+            let feedbackEl = document.getElementById('planoFeedback');
+            if (!feedbackEl) {
+                feedbackEl = document.createElement('div');
+                feedbackEl.id = 'planoFeedback';
+                feedbackEl.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #dc3545;
+                    color: white;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    z-index: 10000;
+                    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                `;
+                document.body.appendChild(feedbackEl);
+            }
+            
+            feedbackEl.textContent = mensagem;
+            feedbackEl.style.display = 'block';
+            
+            setTimeout(() => {
+                feedbackEl.style.display = 'none';
+            }, 5000);
+        }
+
+        // ========== FUNÇÕES DE INSTITUIÇÕES ==========
+
+        // FUNÇÃO CORRIGIDA: Abrir modal de instituições
+        async function abrirInstituicoes() {
+            console.log('🔄 Abrindo modal de instituições...');
+            
+            // Mostrar modal imediatamente
+            document.getElementById('instituicoesModal').style.display = 'block';
+            
+            // Mostrar loading
+            const instituicoesLista = document.getElementById('instituicoesLista');
+            instituicoesLista.innerHTML = `
+                <div class="sem-instituicoes">
+                    <div class="loading"></div>
+                    <p>Carregando instituições...</p>
+                </div>
+            `;
+
+            try {
+                console.log('🔄 Carregando instituições da API...');
+                // CORREÇÃO: Usar a API correta que retorna instituições com profissionais
+                const response = await fetch('/api/instituicoes-com-profissionais');
+                
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('🏥 Dados completos recebidos:', data);
+                
+                // Agora passamos o objeto completo para a função de exibição
+                exibirInstituicoesComProfissionais(data);
+                
+            } catch (error) {
+                console.error('❌ Erro ao carregar instituições:', error);
+                document.getElementById('instituicoesLista').innerHTML = `
+                    <div class="sem-instituicoes">
+                        <h3>❌ Erro ao carregar instituições</h3>
+                        <p>Não foi possível carregar a lista de instituições no momento.</p>
+                        <p>Erro: ${error.message}</p>
+                        <button class="btn" onclick="abrirInstituicoes()" style="margin-top: 1rem;">
+                            🔄 Tentar Novamente
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // NOVA FUNÇÃO: Exibir instituições com profissionais
+        function exibirInstituicoesComProfissionais(data) {
+            const instituicoesLista = document.getElementById('instituicoesLista');
+            const instituicoesAlert = document.getElementById('instituicoesAlert');
+            
+            console.log("📊 Dados recebidos para exibição:", data);
+            
+            // Limpar alertas
+            instituicoesAlert.innerHTML = '';
+            
+            // Verificar se a resposta da API foi bem sucedida
+            if (!data || !data.success) {
+                instituicoesLista.innerHTML = `
+                    <div class="sem-instituicoes">
+                        <h3>❌ Erro ao carregar instituições</h3>
+                        <p>${data?.error || 'Erro desconhecido ao carregar dados'}</p>
+                        <button class="btn" onclick="abrirInstituicoes()" style="margin-top: 1rem;">
+                            🔄 Tentar Novamente
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            const instituicoes = data.instituicoes;
+            
+            if (!instituicoes || instituicoes.length === 0) {
+                instituicoesLista.innerHTML = `
+                    <div class="sem-instituicoes">
+                        <h3>🏥 Nenhuma instituição cadastrada</h3>
+                        <p>No momento não há instituições de apoio disponíveis.</p>
+                        <p>As instituições podem ser cadastradas na página inicial.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            
+            instituicoes.forEach(instituicao => {
+                console.log("🏥 Processando instituição:", instituicao);
+                
+                let profissionaisHTML = '';
+                
+                if (instituicao.profissionais && instituicao.profissionais.length > 0) {
+                    instituicao.profissionais.forEach(profissional => {
+                        profissionaisHTML += `
+                            <div class="profissional-item">
+                                <div class="profissional-nome">${profissional.nome || 'Nome não informado'}</div>
+                                <div class="profissao">${profissional.profissao || 'Profissão não informada'} - ${profissional.especialidade || 'Especialidade não informada'}</div>
+                                ${profissional.registro_profissional ? `<div style="font-size: 0.8rem; color: #666;">Registro: ${profissional.registro_profissional}</div>` : ''}
+                                ${profissional.abordagem ? `<div style="font-size: 0.8rem; color: #666;">Abordagem: ${profissional.abordagem}</div>` : ''}
+                                ${profissional.telefone ? `<div style="font-size: 0.8rem; color: #666;">📞 ${profissional.telefone}</div>` : ''}
+                                ${profissional.email ? `<div style="font-size: 0.8rem; color: #666;">✉️ ${profissional.email}</div>` : ''}
+                            </div>
+                        `;
+                    });
+                } else {
+                    profissionaisHTML = '<p style="color: #666; font-style: italic; padding: 1rem;">Nenhum profissional cadastrado nesta instituição</p>';
+                }
+                
+                html += `
+                    <div class="instituicao-card">
+                        <div class="instituicao-nome">${instituicao.nome || 'Instituição sem nome'}</div>
+                        <div style="color: #666; font-size: 0.9rem; margin-bottom: 1rem;">${instituicao.tipo || 'Tipo não informado'}</div>
+                        
+                        <div style="margin-bottom: 1rem;">
+                            <strong>👨‍⚕️ Profissionais:</strong>
+                            ${profissionaisHTML}
+                        </div>
+                        
+                        <div class="instituicao-info">
+                            ${instituicao.endereco ? `<div class="info-item"><i>📍</i> ${instituicao.endereco}</div>` : ''}
+                            ${instituicao.telefone ? `<div class="info-item"><i>📞</i> ${instituicao.telefone}</div>` : ''}
+                            ${instituicao.email ? `<div class="info-item"><i>✉️</i> ${instituicao.email}</div>` : ''}
+                            ${instituicao.descricao ? `<div class="info-item"><i>📝</i> ${instituicao.descricao}</div>` : ''}
+                            ${instituicao.especialidades ? `<div class="info-item"><i>🎯</i> ${instituicao.especialidades}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            instituicoesLista.innerHTML = html;
+            
+            // Mostrar mensagem de sucesso
+            instituicoesAlert.innerHTML = `
+                <div class="alert alert-success">
+                    ✅ ${instituicoes.length} instituição(ões) carregada(s) com sucesso!
+                </div>
+            `;
+            
+            console.log("✅ Instituições exibidas com sucesso!");
+        }
+
+        // ========== FUNÇÕES DO DASHBOARD ==========
 
         async function carregarDadosIniciais() {
             try {
@@ -846,94 +2116,77 @@
             }
         }
 
-        async function carregarDadosBasicos() {
-            try {
-                const authResponse = await fetch('/api/check-auth');
-                if (authResponse.ok) {
-                    const authData = await authResponse.json();
-                    if (authData.authenticated) {
-                        const usuarioBasico = {
-                            nome: authData.usuario.nome,
-                            idade: 'Não informada',
-                            email: authData.usuario.email
-                        };
-                        
-                        atualizarInterface(usuarioBasico, null, [], {}, "Complete o questionário para receber dicas personalizadas", true);
-                        return;
-                    }
-                }
-                
-                document.getElementById('userName').textContent = 'Usuário';
-                document.getElementById('profileInfo').innerHTML = '<p>Complete o questionário para ver seu perfil completo.</p>';
-                
-            } catch (error) {
-                console.error('Erro ao carregar dados básicos:', error);
-            }
-        }
-
         function atualizarInterface(usuario, ultimoDiagnostico, historico, familiaData, dicaDoDia, precisaReavaliar) {
+            // Atualizar nome do usuário
             document.getElementById('userName').textContent = usuario.nome;
-            atualizarPerfil(usuario, ultimoDiagnostico);
-            atualizarResumoFamiliar(familiaData);
-            atualizarGrafico(historico);
             
-            // Mostrar alerta se precisa reavaliar
-            if (precisaReavaliar && (!ultimoDiagnostico || (new Date() - new Date(ultimoDiagnostico.data_diagnostico)) > 30 * 24 * 60 * 60 * 1000)) {
-                mostrarAlertaReavaliacao();
-            }
-        }
-
-        function atualizarPerfil(usuario, diagnostico) {
+            // Atualizar perfil do usuário
             const profileInfo = document.getElementById('profileInfo');
-            
-            let html = `
+            let profileHTML = `
                 <div class="profile-item">
                     <strong>Nome</strong>
-                    ${usuario.nome}
+                    <div>${usuario.nome}</div>
                 </div>
                 <div class="profile-item">
                     <strong>Idade</strong>
-                    ${usuario.idade} ${typeof usuario.idade === 'number' ? 'anos' : ''}
+                    <div>${usuario.idade} anos</div>
+                </div>
+                <div class="profile-item">
+                    <strong>Email</strong>
+                    <div>${usuario.email}</div>
                 </div>
             `;
             
-            if (diagnostico) {
-                const nivelClass = diagnostico.nivel ? diagnostico.nivel.toLowerCase().replace(' ', '-') : 'moderado';
-                html += `
+            if (ultimoDiagnostico) {
+                const nivelClass = ultimoDiagnostico.nivel.toLowerCase().replace(' ', '-');
+                profileHTML += `
                     <div class="profile-item">
-                        <strong>Última Pontuação</strong>
-                        ${diagnostico.pontuacao} pontos
-                    </div>
-                    <div class="profile-item">
-                        <strong>Nível Atual</strong>
-                        <span class="nivel ${nivelClass}">${diagnostico.nivel}</span>
-                    </div>
-                    <div class="profile-item">
-                        <strong>Última Avaliação</strong>
-                        ${new Date(diagnostico.data_diagnostico).toLocaleDateString('pt-BR')}
+                        <strong>Último Diagnóstico</strong>
+                        <div>Pontuação: ${ultimoDiagnostico.pontuacao}/30</div>
+                        <div class="nivel ${nivelClass}">${ultimoDiagnostico.nivel}</div>
                     </div>
                 `;
             } else {
-                html += `
+                profileHTML += `
                     <div class="profile-item">
-                        <strong>Status</strong>
-                        Complete o questionário para ver seu diagnóstico
+                        <strong>Diagnóstico</strong>
+                        <div>Nenhum diagnóstico realizado</div>
                     </div>
                 `;
             }
             
-            profileInfo.innerHTML = html;
+            profileInfo.innerHTML = profileHTML;
+            
+            // Atualizar resumo familiar
+            atualizarResumoFamiliar(familiaData);
+            
+            // Atualizar gráfico se houver histórico
+            if (historico && historico.length > 0) {
+                atualizarGrafico(historico);
+            }
+            
+            // Mostrar alerta de reavaliação se necessário
+            if (precisaReavaliar) {
+                const cardQuestionario = document.querySelector('.card:first-child');
+                const alerta = document.createElement('div');
+                alerta.className = 'reavaliacao-alerta';
+                alerta.innerHTML = '📅 Está na hora de fazer uma nova avaliação! Sua última avaliação já tem mais de 30 dias.';
+                cardQuestionario.appendChild(alerta);
+            }
         }
 
         function atualizarResumoFamiliar(familiaData) {
             const familySummary = document.getElementById('familySummary');
             
-            if (!familiaData.membros || familiaData.membros.length === 0) {
-                familySummary.innerHTML = '<p>Nenhum membro familiar encontrado. Adicione membros para ver o resumo familiar.</p>';
+            if (!familiaData || familiaData.total_membros === 0) {
+                familySummary.innerHTML = `
+                    <p>Nenhum membro da família cadastrado ainda.</p>
+                    <p>Adicione membros da família para acompanhar o progresso de todos.</p>
+                `;
                 return;
             }
             
-            let html = `
+            let familyHTML = `
                 <div class="family-stats">
                     <div class="stat-item">
                         <span class="stat-value">${familiaData.total_membros}</span>
@@ -952,30 +2205,23 @@
             `;
             
             familiaData.membros.forEach(membro => {
-                const nivelClass = membro.nivel ? membro.nivel.toLowerCase().replace(' ', '-') : 'moderado';
-                const relacionamento = membro.relacionamento ? ` (${membro.relacionamento})` : '';
-                const pontuacao = membro.pontuacao ? membro.pontuacao : 'Não avaliado';
-                const nivel = membro.nivel ? membro.nivel : 'Não avaliado';
+                // CORREÇÃO: Remover "null" da idade nos membros da família
+                const idadeDisplay = membro.idade && membro.idade !== 'null' ? `${membro.idade} anos` : 'Idade não informada';
+                const nivelClass = membro.nivel ? membro.nivel.toLowerCase().replace(' ', '-') : 'sem-diagnostico';
+                const nivelDisplay = membro.nivel || 'Não avaliado';
+                const pontuacaoDisplay = membro.pontuacao || '--';
                 
-                html += `
+                familyHTML += `
                     <div class="family-member">
-                        <strong>${membro.nome}${relacionamento}</strong>
-                        <div style="margin-top: 8px;">
-                            <span class="nivel ${nivelClass}">${nivel}</span>
-                            ${pontuacao !== 'Não avaliado' ? `<span style="margin-left: 10px; color: #666;">${pontuacao} pts</span>` : ''}
-                        </div>
-                        ${membro.data_diagnostico ? `
-                        <div style="margin-top: 5px; font-size: 0.8rem; color: #888;">
-                            ${new Date(membro.data_diagnostico).toLocaleDateString('pt-BR')}
-                        </div>
-                        ` : `
-                        <div class="sem-diagnostico">⚠️ Precisa responder o questionário</div>
-                        `}
+                        <strong>${membro.nome}</strong>
+                        <div>${idadeDisplay} - ${membro.relacionamento}</div>
+                        <div>Pontuação: ${pontuacaoDisplay}/30</div>
+                        <div class="nivel ${nivelClass}">${nivelDisplay}</div>
                         <div class="botoes-membro">
-                            <button class="btn-questionario" onclick="abrirQuestionarioParaMembro(${membro.id}, '${membro.nome}')">
+                            <button class="btn-questionario" onclick="abrirQuestionarioFamiliar(${membro.id}, '${membro.nome}')">
                                 📝 Questionário
                             </button>
-                            <button class="btn-excluir" onclick="excluirMembroFamilia(${membro.id}, '${membro.nome}')">
+                            <button class="btn-excluir" onclick="excluirMembroFamilia(${membro.id})">
                                 🗑️ Excluir
                             </button>
                         </div>
@@ -983,232 +2229,57 @@
                 `;
             });
             
-            html += '</div>';
-            familySummary.innerHTML = html;
-        }
-
-        // NOVA FUNÇÃO: Abrir questionário para membro específico
-        async function abrirQuestionarioParaMembro(membroId, membroNome) {
-            currentMembroId = membroId;
-            currentMembroNome = membroNome;
-            
-            try {
-                const response = await fetch('/api/perguntas');
-                const perguntas = await response.json();
-                exibirQuestionarioFamiliar(perguntas, membroNome);
-            } catch (error) {
-                console.error('Erro ao carregar perguntas:', error);
-                alert('Erro ao carregar o questionário. Tente novamente.');
-            }
-        }
-
-        function exibirQuestionarioFamiliar(perguntas, membroNome) {
-            const quizQuestions = document.getElementById('familyQuizQuestions');
-            const submitBtn = document.getElementById('submitFamilyQuiz');
-            const quizResult = document.getElementById('familyQuizResult');
-            const quizTitle = document.getElementById('familyQuizTitle');
-            const quizDescription = document.getElementById('familyQuizDescription');
-            
-            quizTitle.textContent = `Questionário para ${membroNome}`;
-            quizDescription.textContent = `Responda as perguntas pensando nos hábitos digitais de ${membroNome}.`;
-            
-            respostasAtuais = {};
-            quizResult.style.display = 'none';
-            submitBtn.style.display = 'block';
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Responda todas as perguntas (0/' + perguntas.length + ')';
-            
-            let html = '';
-            perguntas.forEach((pergunta, index) => {
-                html += `
-                    <div class="pergunta" data-pergunta-id="${pergunta.id}">
-                        <div class="pergunta-texto">${index + 1}. ${pergunta.texto}</div>
-                        <div class="opcoes-resposta">
-                `;
-                
-                pergunta.opcoes.forEach(opcao => {
-                    html += `
-                        <div class="opcao" data-opcao-id="${opcao.id}" data-pontuacao="${opcao.pontuacao}">
-                            ${opcao.texto}
-                        </div>
-                    `;
-                });
-                
-                html += `</div></div>`;
-            });
-            
-            quizQuestions.innerHTML = html;
-            
-            document.querySelectorAll('#familyQuizQuestions .opcao').forEach(opcao => {
-                opcao.addEventListener('click', function() {
-                    const pergunta = this.closest('.pergunta');
-                    const perguntaId = pergunta.dataset.perguntaId;
-                    const opcaoId = this.dataset.opcaoId;
-                    const pontuacao = parseInt(this.dataset.pontuacao);
-                    
-                    pergunta.querySelectorAll('.opcao').forEach(o => {
-                        o.classList.remove('selecionada');
-                    });
-                    
-                    this.classList.add('selecionada');
-                    
-                    respostasAtuais[perguntaId] = {
-                        opcaoId: opcaoId,
-                        pontuacao: pontuacao
-                    };
-                    
-                    verificarCompletudeQuestionarioFamiliar(perguntas.length);
-                });
-            });
-            
-            document.getElementById('familyQuizModal').style.display = 'block';
-        }
-
-        function verificarCompletudeQuestionarioFamiliar(totalPerguntas) {
-            const submitBtn = document.getElementById('submitFamilyQuiz');
-            const respostas = Object.keys(respostasAtuais).length;
-            
-            if (respostas === totalPerguntas) {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Enviar Respostas';
-            } else {
-                submitBtn.disabled = true;
-                submitBtn.textContent = `Responda todas as perguntas (${respostas}/${totalPerguntas})`;
-            }
-        }
-
-        async function enviarQuestionarioFamiliar() {
-            try {
-                const respostasArray = Object.entries(respostasAtuais).map(([perguntaId, resposta]) => ({
-                    perguntaId: parseInt(perguntaId),
-                    opcaoId: parseInt(resposta.opcaoId),
-                    pontuacao: resposta.pontuacao
-                }));
-                
-                const response = await fetch(`/api/familia/membros/${currentMembroId}/diagnostico`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        respostas: respostasArray
-                    })
-                });
-                
-                const resultado = await response.json();
-                
-                if (resultado.success) {
-                    exibirResultadoQuestionarioFamiliar(resultado);
-                } else {
-                    throw new Error(resultado.error);
-                }
-                
-            } catch (error) {
-                console.error('Erro ao enviar questionário familiar:', error);
-                alert('Erro ao enviar questionário. Tente novamente.');
-            }
-        }
-
-        function exibirResultadoQuestionarioFamiliar(resultado) {
-            const quizResult = document.getElementById('familyQuizResult');
-            const submitBtn = document.getElementById('submitFamilyQuiz');
-            
-            submitBtn.style.display = 'none';
-            
-            const nivelClass = resultado.diagnostico.nivel.toLowerCase().replace(' ', '-');
-            
-            let html = `
-                <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 8px; margin: 20px 0;">
-                    <h3>Resultado para ${currentMembroNome}</h3>
-                    <div style="font-size: 2rem; font-weight: bold; margin: 10px 0;">
-                        ${resultado.diagnostico.pontuacao} Pontos
-                    </div>
-                    <div style="margin: 15px 0;">
-                        <span class="nivel ${nivelClass}" style="font-size: 1.2rem;">
-                            ${resultado.diagnostico.nivel}
-                        </span>
-                    </div>
-                    <p>Data do diagnóstico: ${new Date(resultado.diagnostico.data_diagnostico).toLocaleDateString('pt-BR')}</p>
-                </div>
-            `;
-            
-            if (resultado.solucoes && resultado.solucoes.length > 0) {
-                html += `
-                    <div class="solucoes-list">
-                        <h4>Sugestões para ${currentMembroNome}:</h4>
-                        <div>
-                `;
-                
-                resultado.solucoes.forEach((solucao, index) => {
-                    html += `<div class="solucao-item">${index + 1}. ${solucao}</div>`;
-                });
-                
-                html += `</div></div>`;
-            }
-            
-            html += `
-                <div style="text-align: center; margin-top: 20px;">
-                    <button class="btn" onclick="fecharQuestionarioFamiliarERecarregar()">Fechar e Ver Dashboard</button>
-                </div>
-            `;
-            
-            quizResult.innerHTML = html;
-            quizResult.style.display = 'block';
-        }
-
-        function fecharQuestionarioFamiliarERecarregar() {
-            document.getElementById('familyQuizModal').style.display = 'none';
-            carregarDadosIniciais();
+            familyHTML += '</div>';
+            familySummary.innerHTML = familyHTML;
         }
 
         function atualizarGrafico(historico) {
             const ctx = document.getElementById('chartCanvas').getContext('2d');
             
+            // Destruir instância anterior do gráfico se existir
             if (chartInstance) {
                 chartInstance.destroy();
             }
             
-            if (!historico || historico.length === 0) {
-                document.getElementById('progressChart').innerHTML = `
-                    <div class="chart-placeholder">
-                        Complete seu primeiro questionário para ver seu progresso
-                    </div>
-                `;
-                return;
-            }
+            const labels = historico.map((item, index) => `Avaliação ${index + 1}`);
+            const data = historico.map(item => item.pontuacao);
+            const niveis = historico.map(item => item.nivel);
             
-            const datas = historico.map(item => 
-                new Date(item.data_diagnostico).toLocaleDateString('pt-BR')
-            );
-            const pontuacoes = historico.map(item => item.pontuacao);
+            // Cores baseadas no nível
+            const cores = niveis.map(nivel => {
+                switch(nivel) {
+                    case 'Dependente': return '#ff6b6b';
+                    case 'Moderado': return '#ffa726';
+                    case 'Não dependente': return '#4caf50';
+                    default: return '#4a6baf';
+                }
+            });
             
             chartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: datas,
+                    labels: labels,
                     datasets: [{
-                        label: 'Pontuação de Dependência',
-                        data: pontuacoes,
+                        label: 'Pontuação do Questionário',
+                        data: data,
                         borderColor: '#4a6baf',
                         backgroundColor: 'rgba(74, 107, 175, 0.1)',
-                        borderWidth: 3,
+                        borderWidth: 2,
                         fill: true,
-                        tension: 0.4
+                        tension: 0.4,
+                        pointBackgroundColor: cores,
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        }
-                    },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            max: 50,
+                            max: 30,
                             title: {
                                 display: true,
                                 text: 'Pontuação'
@@ -1217,7 +2288,20 @@
                         x: {
                             title: {
                                 display: true,
-                                text: 'Data da Avaliação'
+                                text: 'Avaliações'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                afterLabel: function(context) {
+                                    const index = context.dataIndex;
+                                    return `Nível: ${niveis[index]}`;
+                                }
                             }
                         }
                     }
@@ -1225,532 +2309,20 @@
             });
         }
 
-        function mostrarAlertaReavaliacao() {
-            const welcomeSection = document.querySelector('.welcome');
-            const alerta = document.createElement('div');
-            alerta.className = 'reavaliacao-alerta';
-            alerta.innerHTML = `
-                <strong>⏰ Hora da Reavaliação!</strong>
-                <p>Faz mais de 30 dias desde sua última avaliação. Faça o questionário novamente para atualizar seu diagnóstico.</p>
-            `;
-            welcomeSection.parentNode.insertBefore(alerta, welcomeSection.nextSibling);
-        }
-
-        // FUNÇÃO NOVA: Excluir membro da família
-        async function excluirMembroFamilia(membroId, nomeMembro) {
-            if (!confirm(`Tem certeza que deseja excluir ${nomeMembro} da família?`)) {
-                return;
-            }
-            
-            try {
-                console.log(`🗑️ Excluindo membro ${membroId} - ${nomeMembro}`);
-                
-                const response = await fetch(`/api/familia/membros/${membroId}`, {
-                    method: 'DELETE'
-                });
-                
-                const resultado = await response.json();
-                console.log('📨 Resposta da exclusão:', resultado);
-                
-                if (resultado.success) {
-                    alert('✅ ' + resultado.message);
-                    // Recarregar dados para atualizar a interface
-                    await carregarDadosIniciais();
-                    console.log('🗑️ Membro excluído com sucesso!');
-                } else {
-                    alert('❌ Erro: ' + resultado.error);
-                    console.error('Erro da API:', resultado.error);
-                }
-                
-            } catch (error) {
-                console.error('❌ Erro completo ao excluir membro:', error);
-                alert('❌ Erro ao excluir membro. Verifique o console para detalhes.');
-            }
-        }
-
-        // Funções do Centro de Recursos (mantidas iguais)
-        async function abrirDicasPersonalizadas() {
-            currentResource = 'dicas';
-            const response = await fetch('/api/dashboard-data');
-            const data = await response.json();
-            
-            let html = '<h2>💡 Dicas Personalizadas</h2>';
-            
-            if (data.ultimo_diagnostico) {
-                const solucoes = await obterSolucoesPorNivel(data.ultimo_diagnostico.nivel);
-                html += `
-                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 15px 0;">
-                        <h4>Seu diagnóstico atual: <span class="nivel ${data.ultimo_diagnostico.nivel.toLowerCase().replace(' ', '-')}">${data.ultimo_diagnostico.nivel}</span></h4>
-                        <p>Pontuação: ${data.ultimo_diagnostico.pontuacao} pontos</p>
-                    </div>
-                    <div class="solucoes-list">
-                        <h4>Sugestões para melhorar seu bem-estar digital:</h4>
-                        ${solucoes.map((solucao, index) => `<div class="solucao-item">${index + 1}. ${solucao}</div>`).join('')}
-                    </div>
-                `;
-            } else {
-                html += `
-                    <div style="text-align: center; padding: 40px;">
-                        <p>Complete o questionário para receber dicas personalizadas.</p>
-                        <button class="btn" onclick="abrirQuestionario()">Fazer Questionário</button>
-                    </div>
-                `;
-            }
-            
-            document.getElementById('resourcesContent').innerHTML = html;
-            document.getElementById('resourcesModal').style.display = 'block';
-        }
-
-        async function abrirPanoramaFamilia() {
-            currentResource = 'panorama';
-            const response = await fetch('/api/familia');
-            const data = await response.json();
-            
-            let html = '<h2>👨‍👩‍👧‍👦 Panorama da Família</h2>';
-            
-            if (data.membros && data.membros.length > 0) {
-                // Calcular distribuição dos níveis
-                const niveis = {};
-                data.membros.forEach(membro => {
-                    const nivel = membro.nivel || 'Não avaliado';
-                    niveis[nivel] = (niveis[nivel] || 0) + 1;
-                });
-                
-                html += `
-                    <div class="family-stats">
-                        <div class="stat-item">
-                            <span class="stat-value">${data.total_membros}</span>
-                            <span class="stat-label">Total de Membros</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-value">${data.media_pontuacao}</span>
-                            <span class="stat-label">Pontuação Média</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-value">${data.nivel_predominante}</span>
-                            <span class="stat-label">Nível Predominante</span>
-                        </div>
-                    </div>
-                    <div style="margin-top: 20px;">
-                        <h4>Distribuição dos Níveis:</h4>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 15px;">
-                `;
-                
-                for (const [nivel, quantidade] of Object.entries(niveis)) {
-                    const nivelClass = nivel.toLowerCase().replace(' ', '-');
-                    html += `
-                        <div style="text-align: center; padding: 15px; background: #f8f9fa; border-radius: 8px;">
-                            <div style="font-size: 1.5rem; font-weight: bold;">${quantidade}</div>
-                            <div class="nivel ${nivelClass}">${nivel}</div>
-                        </div>
-                    `;
-                }
-                
-                html += `</div></div>`;
-            } else {
-                html += `
-                    <div style="text-align: center; padding: 40px;">
-                        <p>Nenhum membro familiar encontrado.</p>
-                        <button class="btn" onclick="document.getElementById('familyModal').style.display = 'block'">Adicionar Primeiro Membro</button>
-                    </div>
-                `;
-            }
-            
-            document.getElementById('resourcesContent').innerHTML = html;
-            document.getElementById('resourcesModal').style.display = 'block';
-        }
-
-        async function abrirAutoavaliacao() {
-            currentResource = 'autoavaliacao';
-            
-            // Buscar reflexões salvas
-            let reflexoesSalvas = {};
-            try {
-                const response = await fetch('/api/reflexoes');
-                const data = await response.json();
-                if (data.success && data.reflexoes) {
-                    reflexoesSalvas = data.reflexoes;
-                }
-            } catch (error) {
-                console.error('Erro ao carregar reflexões:', error);
-            }
-            
-            const perguntasReflexao = [
-                "Como você se sentiu sem internet hoje?",
-                "Quais atividades offline você realizou hoje?",
-                "O que você aprendeu sobre seus hábitos digitais esta semana?",
-                "Quais benefícios você notou ao reduzir o tempo de tela?",
-                "Que estratégias funcionaram para você manter o equilíbrio digital?"
-            ];
-            
-            let html = `
-                <h2>📝 Autoavaliação e Reflexão</h2>
-                <p>Reflita sobre suas experiências e sentimentos em relação ao uso da tecnologia:</p>
-            `;
-            
-            perguntasReflexao.forEach((pergunta, index) => {
-                const respostaSalva = reflexoesSalvas[pergunta] ? reflexoesSalvas[pergunta].resposta : '';
-                html += `
-                    <div class="reflection-question">
-                        <label>${pergunta}</label>
-                        <textarea id="reflection${index}" placeholder="Escreva sua reflexão aqui...">${respostaSalva}</textarea>
-                    </div>
-                `;
-            });
-            
-            html += `
-                <button class="btn" onclick="salvarReflexoes()">Salvar Reflexões</button>
-                ${Object.keys(reflexoesSalvas).length > 0 ? 
-                  '<p style="color: green; margin-top: 10px;">✅ Você tem reflexões salvas anteriores</p>' : ''}
-            `;
-            
-            document.getElementById('resourcesContent').innerHTML = html;
-            document.getElementById('resourcesModal').style.display = 'block';
-        }
-
-        async function abrirPlanoAcao() {
-            currentResource = 'planoacao';
-            const response = await fetch('/api/dashboard-data');
-            const data = await response.json();
-            
-            let html = '<h2>✅ Plano de Ação Pessoal</h2>';
-            
-            if (data.ultimo_diagnostico) {
-                const solucoes = await obterSolucoesPorNivel(data.ultimo_diagnostico.nivel);
-                
-                html += `
-                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                        <p>Baseado no seu nível atual: <strong>${data.ultimo_diagnostico.nivel}</strong></p>
-                        <p>Pontuação: ${data.ultimo_diagnostico.pontuacao} pontos</p>
-                    </div>
-                    <div style="margin-top: 20px;">
-                        <h4>Seu Plano de Ação Personalizado:</h4>
-                        <p>Marque as ações conforme for realizando-as:</p>
-                `;
-                
-                solucoes.forEach((solucao, index) => {
-                    const completed = localStorage.getItem(`acao_${data.ultimo_diagnostico.nivel}_${index}`) === 'true';
-                    html += `
-                        <div class="action-item ${completed ? 'completed' : ''}">
-                            <input type="checkbox" id="acao${index}" ${completed ? 'checked' : ''} onchange="marcarAcao('${data.ultimo_diagnostico.nivel}', ${index}, this.checked)">
-                            <label for="acao${index}">${solucao}</label>
-                        </div>
-                    `;
-                });
-                
-                html += `</div>`;
-            } else {
-                html += `
-                    <div style="text-align: center; padding: 40px;">
-                        <p>Complete o questionário para criar um plano de ação personalizado.</p>
-                        <button class="btn" onclick="abrirQuestionario()">Fazer Questionário</button>
-                    </div>
-                `;
-            }
-            
-            document.getElementById('resourcesContent').innerHTML = html;
-            document.getElementById('resourcesModal').style.display = 'block';
-        }
-
-        async function obterSolucoesPorNivel(nivel) {
-            try {
-                const response = await fetch(`/api/solucoes/${nivel}`);
-                const data = await response.json();
-                return data.solucoes || [];
-            } catch (error) {
-                console.error('Erro ao obter soluções:', error);
-                return [
-                    "Estabeleça limites de tempo para uso da internet",
-                    "Pratique atividades offline regularmente",
-                    "Desative notificações não essenciais",
-                    "Estabeleça zonas livres de dispositivos em casa",
-                    "Pratique a técnica Pomodoro para gestão do tempo",
-                    "Mantenha um diário de uso da internet",
-                    "Estabeleça metas realistas de redução",
-                    "Desenvolva hobbies offline"
-                ];
-            }
-        }
-
-        async function salvarReflexoes() {
-            const perguntasReflexao = [
-                "Como você se sentiu sem internet hoje?",
-                "Quais atividades offline você realizou hoje?",
-                "O que você aprendeu sobre seus hábitos digitais esta semana?",
-                "Quais benefícios você notou ao reduzir o tempo de tela?",
-                "Que estratégias funcionaram para você manter o equilíbrio digital?"
-            ];
-            
-            const reflexoes = {};
-            let todasVazias = true;
-            
-            perguntasReflexao.forEach((pergunta, index) => {
-                const resposta = document.getElementById(`reflection${index}`).value;
-                reflexoes[pergunta] = resposta;
-                if (resposta && resposta.trim()) {
-                    todasVazias = false;
-                }
-            });
-            
-            if (todasVazias) {
-                alert('Por favor, escreva pelo menos uma reflexão antes de salvar.');
-                return;
-            }
-            
-            try {
-                const response = await fetch('/api/reflexoes', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        reflexoes: reflexoes
-                    })
-                });
-                
-                const resultado = await response.json();
-                
-                if (resultado.success) {
-                    alert('Suas reflexões foram salvas com sucesso!');
-                    document.getElementById('resourcesModal').style.display = 'none';
-                } else {
-                    alert('Erro ao salvar reflexões: ' + resultado.error);
-                }
-                
-            } catch (error) {
-                console.error('Erro ao salvar reflexões:', error);
-                alert('Erro ao salvar reflexões. Tente novamente.');
-            }
-        }
-
-        function marcarAcao(nivel, index, completada) {
-            localStorage.setItem(`acao_${nivel}_${index}`, completada);
-            const actionItem = document.querySelector(`#acao${index}`).closest('.action-item');
-            if (completada) {
-                actionItem.classList.add('completed');
-            } else {
-                actionItem.classList.remove('completed');
-            }
-        }
-
-        // CORREÇÃO DA FUNÇÃO ADICIONAR MEMBRO DA FAMÍLIA
-        async function adicionarMembroFamilia() {
-            const nome = document.getElementById('memberName').value;
-            const idade = document.getElementById('memberAge').value;
-            const relacionamento = document.getElementById('memberRelationship').value;
-            
-            if (!nome || !idade || !relacionamento) {
-                alert('Por favor, preencha todos os campos.');
-                return;
-            }
-            
-            if (idade < 1 || idade > 120) {
-                alert('Por favor, insira uma idade válida (1-120).');
-                return;
-            }
-            
-            try {
-                console.log('🔄 Enviando dados para API...', { nome, idade, relacionamento });
-                
-                const response = await fetch('/api/familia/membros', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        nome: nome,
-                        idade: parseInt(idade),
-                        relacionamento: relacionamento
-                    })
-                });
-                
-                const resultado = await response.json();
-                console.log('📨 Resposta da API:', resultado);
-                
-                if (resultado.success) {
-                    alert('✅ ' + resultado.message);
-                    // Limpar formulário e fechar modal
-                    document.getElementById('familyForm').reset();
-                    document.getElementById('familyModal').style.display = 'none';
-                    // Recarregar dados para atualizar a interface
-                    await carregarDadosIniciais();
-                    console.log('🎉 Membro adicionado com sucesso!');
-                } else {
-                    alert('❌ Erro: ' + resultado.error);
-                    console.error('Erro da API:', resultado.error);
-                }
-                
-            } catch (error) {
-                console.error('❌ Erro completo ao adicionar membro:', error);
-                alert('❌ Erro ao adicionar membro. Verifique o console para detalhes.');
-            }
-        }
-
-        // Funções do questionário (mantidas iguais)
-        async function abrirQuestionario() {
-            try {
-                const response = await fetch('/api/perguntas');
-                const perguntas = await response.json();
-                exibirQuestionario(perguntas);
-            } catch (error) {
-                console.error('Erro ao carregar perguntas:', error);
-                alert('Erro ao carregar o questionário. Tente novamente.');
-            }
-        }
-
-        function exibirQuestionario(perguntas) {
-            const quizQuestions = document.getElementById('quizQuestions');
-            const submitBtn = document.getElementById('submitQuiz');
-            const quizResult = document.getElementById('quizResult');
-            
-            respostasAtuais = {};
-            quizResult.style.display = 'none';
-            submitBtn.style.display = 'block';
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Responda todas as perguntas (0/' + perguntas.length + ')';
-            
-            let html = '';
-            perguntas.forEach((pergunta, index) => {
-                html += `
-                    <div class="pergunta" data-pergunta-id="${pergunta.id}">
-                        <div class="pergunta-texto">${index + 1}. ${pergunta.texto}</div>
-                        <div class="opcoes-resposta">
-                `;
-                
-                pergunta.opcoes.forEach(opcao => {
-                    html += `
-                        <div class="opcao" data-opcao-id="${opcao.id}" data-pontuacao="${opcao.pontuacao}">
-                            ${opcao.texto}
-                        </div>
-                    `;
-                });
-                
-                html += `</div></div>`;
-            });
-            
-            quizQuestions.innerHTML = html;
-            
-            document.querySelectorAll('.opcao').forEach(opcao => {
-                opcao.addEventListener('click', function() {
-                    const pergunta = this.closest('.pergunta');
-                    const perguntaId = pergunta.dataset.perguntaId;
-                    const opcaoId = this.dataset.opcaoId;
-                    const pontuacao = parseInt(this.dataset.pontuacao);
-                    
-                    pergunta.querySelectorAll('.opcao').forEach(o => {
-                        o.classList.remove('selecionada');
-                    });
-                    
-                    this.classList.add('selecionada');
-                    
-                    respostasAtuais[perguntaId] = {
-                        opcaoId: opcaoId,
-                        pontuacao: pontuacao
-                    };
-                    
-                    verificarCompletudeQuestionario(perguntas.length);
-                });
-            });
-            
-            document.getElementById('quizModal').style.display = 'block';
-        }
-
-        function verificarCompletudeQuestionario(totalPerguntas) {
-            const submitBtn = document.getElementById('submitQuiz');
-            const respostas = Object.keys(respostasAtuais).length;
-            
-            if (respostas === totalPerguntas) {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Enviar Respostas';
-            } else {
-                submitBtn.disabled = true;
-                submitBtn.textContent = `Responda todas as perguntas (${respostas}/${totalPerguntas})`;
-            }
-        }
-
-        async function enviarQuestionario() {
-            try {
-                const respostasArray = Object.entries(respostasAtuais).map(([perguntaId, resposta]) => ({
-                    perguntaId: parseInt(perguntaId),
-                    opcaoId: parseInt(resposta.opcaoId),
-                    pontuacao: resposta.pontuacao
-                }));
-                
-                const response = await fetch('/api/diagnostico', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        respostas: respostasArray
-                    })
-                });
-                
-                const resultado = await response.json();
-                
-                if (resultado.success) {
-                    exibirResultadoQuestionario(resultado);
-                } else {
-                    throw new Error(resultado.error);
-                }
-                
-            } catch (error) {
-                console.error('Erro ao enviar questionário:', error);
-                alert('Erro ao enviar questionário. Tente novamente.');
-            }
-        }
-
-        function exibirResultadoQuestionario(resultado) {
-            const quizResult = document.getElementById('quizResult');
-            const submitBtn = document.getElementById('submitQuiz');
-            
-            submitBtn.style.display = 'none';
-            
-            const nivelClass = resultado.diagnostico.nivel.toLowerCase().replace(' ', '-');
-            
-            let html = `
-                <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 8px; margin: 20px 0;">
-                    <h3>Seu Resultado</h3>
-                    <div style="font-size: 2rem; font-weight: bold; margin: 10px 0;">
-                        ${resultado.diagnostico.pontuacao} Pontos
-                    </div>
-                    <div style="margin: 15px 0;">
-                        <span class="nivel ${nivelClass}" style="font-size: 1.2rem;">
-                            ${resultado.diagnostico.nivel}
-                        </span>
-                    </div>
-                    <p>Data do diagnóstico: ${new Date(resultado.diagnostico.data_diagnostico).toLocaleDateString('pt-BR')}</p>
+        function carregarDadosBasicos() {
+            document.getElementById('userName').textContent = 'Usuário';
+            document.getElementById('profileInfo').innerHTML = `
+                <div class="profile-item">
+                    <strong>Status</strong>
+                    <div>Carregando dados...</div>
                 </div>
             `;
-            
-            if (resultado.solucoes && resultado.solucoes.length > 0) {
-                html += `
-                    <div class="solucoes-list">
-                        <h4>Sugestões para você:</h4>
-                        <div>
-                `;
-                
-                resultado.solucoes.forEach((solucao, index) => {
-                    html += `<div class="solucao-item">${index + 1}. ${solucao}</div>`;
-                });
-                
-                html += `</div></div>`;
-            }
-            
-            html += `
-                <div style="text-align: center; margin-top: 20px;">
-                    <button class="btn" onclick="fecharQuestionarioERecarregar()">Fechar e Ver Dashboard</button>
-                </div>
+            document.getElementById('familySummary').innerHTML = `
+                <p>Carregando dados da família...</p>
             `;
-            
-            quizResult.innerHTML = html;
-            quizResult.style.display = 'block';
         }
 
-        function fecharQuestionarioERecarregar() {
-            document.getElementById('quizModal').style.display = 'none';
-            carregarDadosIniciais();
-        }
+        console.log('🚀 NETENDENCIA - Dashboard carregado com sucesso!');
     </script>
 </body>
 </html>
